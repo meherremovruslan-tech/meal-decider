@@ -199,7 +199,6 @@ export default function MealDecider() {
     setSelectedMeal(null);
     setRecipe('');
     velocityRef.current = Math.random() * 0.15 + 0.22;
-    const currentIngredients = ingredients;
 
     const animate = () => {
       angleRef.current += velocityRef.current;
@@ -212,7 +211,6 @@ export default function MealDecider() {
         const winner = mealsRef.current[idx];
         setSelectedMeal(winner);
         setSpinning(false);
-        saveToHistory(winner, currentIngredients);
       }
     };
     animRef.current = requestAnimationFrame(animate);
@@ -232,6 +230,7 @@ export default function MealDecider() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to get recipe');
       setRecipe(data.recipe);
+      saveToHistory(selectedMeal, ingredients);
     } catch (e) {
       setError(e.message);
     } finally {
