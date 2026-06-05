@@ -172,6 +172,26 @@
   font-weight: 600;
 }
 
+.saveRow {
+  display: flex;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.btnSave {
+  background: #1e1e3a;
+  border: 1px solid #2a2a4a;
+  color: #aaa;
+  font-size: 0.85rem;
+  padding: 8px 16px;
+}
+
+.btnSave:hover {
+  background: #252545;
+  color: #eee;
+  border-color: #6c6cff44;
+}
+
 @media (max-width: 480px) {
   .container {
     padding: 16px 12px 48px;

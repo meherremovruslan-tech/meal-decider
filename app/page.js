@@ -202,6 +202,20 @@ export default function MealDecider() {
     }
   };
 
+  const copyRecipe = () => {
+    navigator.clipboard.writeText(`${selectedMeal}\n\n${recipe}`);
+  };
+
+  const downloadRecipe = () => {
+    const blob = new Blob([`${selectedMeal}\n\n${recipe}`], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${selectedMeal.replace(/\s+/g, '-').toLowerCase()}-recipe.txt`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -304,6 +318,14 @@ export default function MealDecider() {
         <div className={styles.card}>
           <span className={styles.label}>Your Recipe</span>
           <div className={styles.recipe}>{renderRecipe(recipe)}</div>
+          <div className={styles.saveRow}>
+            <button className={`${styles.btn} ${styles.btnSave}`} onClick={copyRecipe}>
+              📋 Copy
+            </button>
+            <button className={`${styles.btn} ${styles.btnSave}`} onClick={downloadRecipe}>
+              ⬇️ Download .txt
+            </button>
+          </div>
         </div>
       )}
 
