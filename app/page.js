@@ -104,6 +104,7 @@ export default function MealDecider() {
   const [spinning, setSpinning] = useState(false);
   const [error, setError] = useState('');
   const [filters, setFilters] = useState([]);
+  const [canvasSize, setCanvasSize] = useState(340);
 
   const toggleFilter = (f) =>
     setFilters(prev => prev.includes(f) ? prev.filter(x => x !== f) : [...prev, f]);
@@ -125,8 +126,15 @@ export default function MealDecider() {
   }, [filters]);
 
   useEffect(() => {
+    const update = () => setCanvasSize(Math.min(window.innerWidth - 48, 340));
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
+
+  useEffect(() => {
     if (meals.length > 0) drawWheel(canvasRef.current, meals, angleRef.current);
-  }, [meals]);
+  }, [meals, canvasSize]);
 
   const suggestMeals = async () => {
     if (!ingredients.trim()) return;
@@ -251,8 +259,8 @@ export default function MealDecider() {
             <canvas
               ref={canvasRef}
               className={styles.canvas}
-              width={340}
-              height={340}
+              width={canvasSize}
+              height={canvasSize}
             />
             <button
               className={`${styles.btn} ${styles.btnSpin}`}
