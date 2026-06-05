@@ -4,17 +4,21 @@ const client = new Anthropic();
 
 export async function POST(req) {
   try {
-    const { meal, ingredients } = await req.json();
+    const { meal, ingredients, filters } = await req.json();
     if (!meal) {
       return Response.json({ error: 'No meal provided' }, { status: 400 });
     }
+
+    const filterText = filters?.length
+      ? `\nDietary requirements (ALL meals MUST comply): ${filters.join(', ')}.`
+      : '';
 
     const message = await client.messages.create({
       model: 'claude-sonnet-4-6',
       max_tokens: 1200,
       messages: [{
         role: 'user',
-        content: `Write a concise recipe for: ${meal}
+        content: `Write a concise recipe for: ${meal}${filterText}
 Available ingredients the user has: ${ingredients}
 
 Format the recipe with these sections:

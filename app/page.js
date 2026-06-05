@@ -117,6 +117,14 @@ export default function MealDecider() {
   useEffect(() => { mealsRef.current = meals; }, [meals]);
 
   useEffect(() => {
+    if (meals.length > 0) {
+      setMeals([]);
+      setSelectedMeal(null);
+      setRecipe('');
+    }
+  }, [filters, meals.length]);
+
+  useEffect(() => {
     if (meals.length > 0) drawWheel(canvasRef.current, meals, angleRef.current);
   }, [meals]);
 
@@ -174,7 +182,7 @@ export default function MealDecider() {
       const res = await fetch('/api/recipe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ meal: selectedMeal, ingredients }),
+        body: JSON.stringify({ meal: selectedMeal, ingredients, filters }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to get recipe');

@@ -152,11 +152,17 @@
   border-radius: 20px;
   border: 1px solid #2a2a4a;
   font-size: 0.8rem;
+  font-weight: 500;
   cursor: pointer;
   color: #888;
   background: #0f0f1a;
-  transition: all 0.15s;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
   user-select: none;
+}
+
+.filterChip:hover {
+  border-color: #3a3a6a;
+  color: #aaa;
 }
 
 .filterChipActive {
