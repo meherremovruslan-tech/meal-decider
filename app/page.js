@@ -120,11 +120,13 @@ export default function MealDecider() {
   useEffect(() => { mealsRef.current = meals; }, [meals]);
 
   useEffect(() => {
-    if (mealsRef.current.length > 0) {
-      setMeals([]);
-      setSelectedMeal(null);
-      setRecipe('');
-    }
+    setMeals(prev => {
+      if (prev.length > 0) {
+        setSelectedMeal(null);
+        setRecipe('');
+      }
+      return [];
+    });
   }, [filters]);
 
   useEffect(() => {
@@ -132,6 +134,10 @@ export default function MealDecider() {
     update();
     window.addEventListener('resize', update);
     return () => window.removeEventListener('resize', update);
+  }, []);
+
+  useEffect(() => {
+    return () => { if (animRef.current) cancelAnimationFrame(animRef.current); };
   }, []);
 
   useEffect(() => {
@@ -234,7 +240,8 @@ export default function MealDecider() {
   };
 
   const copyRecipe = () => {
-    navigator.clipboard.writeText(`${selectedMeal}\n\n${recipe}`);
+    navigator.clipboard.writeText(`${selectedMeal}\n\n${recipe}`)
+      .catch(() => setError('Copy failed — please copy the recipe manually.'));
   };
 
   const downloadRecipe = () => {
@@ -243,7 +250,9 @@ export default function MealDecider() {
     const a = document.createElement('a');
     a.href = url;
     a.download = `${selectedMeal.replace(/\s+/g, '-').toLowerCase()}-recipe.txt`;
+    document.body.appendChild(a);
     a.click();
+    document.body.removeChild(a);
     URL.revokeObjectURL(url);
   };
 
