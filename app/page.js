@@ -245,8 +245,8 @@ export default function MealDecider() {
   };
 
   const shareRecipe = async () => {
-    const payload = btoa(unescape(encodeURIComponent(JSON.stringify({ meal: selectedMeal, recipe }))));
-    const url = `${window.location.origin}/r?d=${payload}`;
+    const payload = btoa(encodeURIComponent(JSON.stringify({ meal: selectedMeal, recipe })));
+    const url = `${window.location.origin}/r?d=${encodeURIComponent(payload)}`;
     try {
       await navigator.clipboard.writeText(url);
       setShareLabel('✓ Copied!');

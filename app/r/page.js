@@ -28,7 +28,7 @@ function SharedRecipe() {
 
   try {
     if (!d) throw new Error();
-    const decoded = JSON.parse(decodeURIComponent(escape(atob(d))));
+    const decoded = JSON.parse(decodeURIComponent(atob(d)));
     meal = decoded.meal;
     recipe = decoded.recipe;
     if (!meal || !recipe) throw new Error();
