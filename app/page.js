@@ -117,12 +117,12 @@ export default function MealDecider() {
   useEffect(() => { mealsRef.current = meals; }, [meals]);
 
   useEffect(() => {
-    if (meals.length > 0) {
+    if (mealsRef.current.length > 0) {
       setMeals([]);
       setSelectedMeal(null);
       setRecipe('');
     }
-  }, [filters, meals.length]);
+  }, [filters]);
 
   useEffect(() => {
     if (meals.length > 0) drawWheel(canvasRef.current, meals, angleRef.current);
