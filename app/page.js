@@ -141,6 +141,12 @@ export default function MealDecider() {
   }, []);
 
   useEffect(() => {
+    if (history.length > 0) {
+      localStorage.setItem('mealHistory', JSON.stringify(history));
+    }
+  }, [history]);
+
+  useEffect(() => {
     if (meals.length > 0) drawWheel(canvasRef.current, meals, angleRef.current);
   }, [meals, canvasSize]);
 
@@ -166,6 +172,17 @@ export default function MealDecider() {
       setLoadingSuggest(false);
     }
   };
+
+  const saveToHistory = useCallback((meal, currentIngredients) => {
+    setHistory(prev => {
+      const entry = {
+        meal,
+        date: new Date().toLocaleDateString(),
+        ingredients: currentIngredients,
+      };
+      return [entry, ...prev.filter(h => h.meal !== meal)].slice(0, 10);
+    });
+  }, []);
 
   const spin = () => {
     if (spinning || meals.length === 0) return;
@@ -226,19 +243,6 @@ export default function MealDecider() {
     a.click();
     URL.revokeObjectURL(url);
   };
-
-  const saveToHistory = useCallback((meal, currentIngredients) => {
-    setHistory(prev => {
-      const entry = {
-        meal,
-        date: new Date().toLocaleDateString(),
-        ingredients: currentIngredients,
-      };
-      const updated = [entry, ...prev.filter(h => h.meal !== meal)].slice(0, 10);
-      localStorage.setItem('mealHistory', JSON.stringify(updated));
-      return updated;
-    });
-  }, []);
 
   return (
     <div className={styles.container}>
@@ -363,7 +367,7 @@ export default function MealDecider() {
         <div className={styles.card}>
           <span className={styles.label}>Recent Meals</span>
           {history.map((h, i) => (
-            <div key={i} className={styles.historyItem}>
+            <div key={h.meal} className={styles.historyItem}>
               <span className={styles.historyMeal}>{h.meal}</span>
               <span className={styles.historyMeta}>{h.date}</span>
             </div>
