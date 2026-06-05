@@ -115,6 +115,7 @@ export default function MealDecider() {
   const velocityRef = useRef(0);
   const animRef = useRef(null);
   const mealsRef = useRef([]);
+  const isInitialHistoryMount = useRef(true);
 
   useEffect(() => { mealsRef.current = meals; }, [meals]);
 
@@ -141,9 +142,11 @@ export default function MealDecider() {
   }, []);
 
   useEffect(() => {
-    if (history.length > 0) {
-      localStorage.setItem('mealHistory', JSON.stringify(history));
+    if (isInitialHistoryMount.current) {
+      isInitialHistoryMount.current = false;
+      return;
     }
+    localStorage.setItem('mealHistory', JSON.stringify(history));
   }, [history]);
 
   useEffect(() => {
