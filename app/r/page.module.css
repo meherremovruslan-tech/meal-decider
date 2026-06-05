@@ -1,0 +1,89 @@
+.container {
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 48px 16px 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logoWrap {
+  width: 160px;
+  margin-bottom: 24px;
+}
+
+.sharedBy {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.8rem;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+.card {
+  width: 100%;
+  background: #16162a;
+  border: 1px solid #2a2a4a;
+  border-radius: 16px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+
+.label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #8888bb;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+
+.mealName {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #f7c948;
+  margin-bottom: 14px;
+}
+
+.recipe {
+  line-height: 1.7;
+  font-size: 0.92rem;
+  color: #ccc;
+}
+
+.errorText {
+  color: #888;
+  font-size: 0.92rem;
+  line-height: 1.6;
+}
+
+.ctaWrap {
+  width: 100%;
+  margin-top: 4px;
+}
+
+.ctaBtn {
+  display: block;
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, #6c6cff, #a855f7);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  border-radius: 14px;
+  text-align: center;
+  text-decoration: none;
+  letter-spacing: 0.2px;
+  transition: opacity 0.2s;
+}
+
+.ctaBtn:hover { opacity: 0.9; }
+
+.ctaSub {
+  text-align: center;
+  color: #555;
+  font-size: 0.8rem;
+  margin-top: 10px;
+}

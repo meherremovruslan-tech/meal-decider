@@ -106,6 +106,7 @@ export default function MealDecider() {
   const [filters, setFilters] = useState([]);
   const [canvasSize, setCanvasSize] = useState(340);
   const [history, setHistory] = useState([]);
+  const [shareLabel, setShareLabel] = useState('🔗 Share');
 
   const toggleFilter = (f) =>
     setFilters(prev => prev.includes(f) ? prev.filter(x => x !== f) : [...prev, f]);
@@ -243,6 +244,18 @@ export default function MealDecider() {
       .catch(() => setError('Copy failed — please copy the recipe manually.'));
   };
 
+  const shareRecipe = async () => {
+    const payload = btoa(unescape(encodeURIComponent(JSON.stringify({ meal: selectedMeal, recipe }))));
+    const url = `${window.location.origin}/r?d=${payload}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      setShareLabel('✓ Copied!');
+    } catch {
+      setShareLabel('⚠ Failed');
+    }
+    setTimeout(() => setShareLabel('🔗 Share'), 2000);
+  };
+
   const downloadRecipe = () => {
     const blob = new Blob([`${selectedMeal}\n\n${recipe}`], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
@@ -366,6 +379,9 @@ export default function MealDecider() {
             </button>
             <button className={`${styles.btn} ${styles.btnSave}`} onClick={downloadRecipe}>
               ⬇️ Download .txt
+            </button>
+            <button className={`${styles.btn} ${styles.btnShare}`} onClick={shareRecipe}>
+              {shareLabel}
             </button>
           </div>
         </div>

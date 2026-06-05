@@ -220,6 +220,19 @@
   }
 }
 
+.btnShare {
+  background: #1a1a3a;
+  border: 1px solid #6c6cff44;
+  color: #6c6cff;
+  font-size: 0.85rem;
+  padding: 8px 16px;
+}
+
+.btnShare:hover {
+  background: #6c6cff22;
+  border-color: #6c6cff;
+}
+
 .historyItem {
   display: flex;
   justify-content: space-between;
