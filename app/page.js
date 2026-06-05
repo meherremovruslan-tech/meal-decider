@@ -5,6 +5,8 @@ import './globals.css';
 
 const COLORS = ['#FF6B6B','#4ECDC4','#45B7D1','#96CEB4','#FFEAA7','#DDA0DD','#98D8C8','#F7DC6F'];
 
+const DIETARY_FILTERS = ['Vegetarian', 'Vegan', 'Gluten-free', 'Dairy-free'];
+
 function drawWheel(canvas, meals, angle) {
   if (!canvas || meals.length === 0) return;
   const ctx = canvas.getContext('2d');
@@ -101,6 +103,10 @@ export default function MealDecider() {
   const [loadingRecipe, setLoadingRecipe] = useState(false);
   const [spinning, setSpinning] = useState(false);
   const [error, setError] = useState('');
+  const [filters, setFilters] = useState([]);
+
+  const toggleFilter = (f) =>
+    setFilters(prev => prev.includes(f) ? prev.filter(x => x !== f) : [...prev, f]);
 
   const canvasRef = useRef(null);
   const angleRef = useRef(0);
@@ -125,7 +131,7 @@ export default function MealDecider() {
       const res = await fetch('/api/suggest', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ingredients }),
+        body: JSON.stringify({ ingredients, filters }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to get suggestions');
@@ -205,6 +211,22 @@ export default function MealDecider() {
           >
             {loadingSuggest ? '...' : 'Suggest'}
           </button>
+        </div>
+        <div className={styles.filterRow}>
+          {DIETARY_FILTERS.map(f => (
+            <label
+              key={f}
+              className={`${styles.filterChip} ${filters.includes(f) ? styles.filterChipActive : ''}`}
+            >
+              <input
+                type="checkbox"
+                checked={filters.includes(f)}
+                onChange={() => toggleFilter(f)}
+                style={{ display: 'none' }}
+              />
+              {f}
+            </label>
+          ))}
         </div>
         {loadingSuggest && (
           <div className={styles.loading} style={{ marginTop: 12 }}>

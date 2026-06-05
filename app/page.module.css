@@ -139,3 +139,29 @@
   text-align: center;
   padding: 20px 0;
 }
+
+.filterRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.filterChip {
+  padding: 4px 14px;
+  border-radius: 20px;
+  border: 1px solid #2a2a4a;
+  font-size: 0.8rem;
+  cursor: pointer;
+  color: #888;
+  background: #0f0f1a;
+  transition: all 0.15s;
+  user-select: none;
+}
+
+.filterChipActive {
+  background: #6c6cff22;
+  border-color: #6c6cff;
+  color: #6c6cff;
+  font-weight: 600;
+}
