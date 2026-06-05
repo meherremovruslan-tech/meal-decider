@@ -220,17 +220,30 @@
   }
 }
 
-.btnShare {
-  background: #1a1a3a;
-  border: 1px solid #6c6cff44;
-  color: #6c6cff;
-  font-size: 0.85rem;
-  padding: 8px 16px;
+.recipeHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
 }
 
-.btnShare:hover {
-  background: #6c6cff22;
-  border-color: #6c6cff;
+.recipeHeader .label {
+  margin-bottom: 0;
+}
+
+.btnShare {
+  background: linear-gradient(135deg, #6c6cff, #a855f7);
+  border: none;
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 8px 18px;
+  letter-spacing: 0.2px;
+  flex-shrink: 0;
+}
+
+.btnShare:hover:not(:disabled) {
+  opacity: 0.88;
 }
 
 .historyItem {

@@ -371,7 +371,12 @@ export default function MealDecider() {
       {/* Step 4: Recipe */}
       {recipe && (
         <div className={styles.card}>
-          <span className={styles.label}>Your Recipe</span>
+          <div className={styles.recipeHeader}>
+            <span className={styles.label}>Your Recipe</span>
+            <button className={`${styles.btn} ${styles.btnShare}`} onClick={shareRecipe}>
+              {shareLabel}
+            </button>
+          </div>
           <div className={styles.recipe}>{renderRecipe(recipe)}</div>
           <div className={styles.saveRow}>
             <button className={`${styles.btn} ${styles.btnSave}`} onClick={copyRecipe}>
@@ -379,9 +384,6 @@ export default function MealDecider() {
             </button>
             <button className={`${styles.btn} ${styles.btnSave}`} onClick={downloadRecipe}>
               ⬇️ Download .txt
-            </button>
-            <button className={`${styles.btn} ${styles.btnShare}`} onClick={shareRecipe}>
-              {shareLabel}
             </button>
           </div>
         </div>
