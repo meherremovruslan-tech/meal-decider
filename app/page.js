@@ -105,6 +105,7 @@ export default function MealDecider() {
   const [error, setError] = useState('');
   const [filters, setFilters] = useState([]);
   const [canvasSize, setCanvasSize] = useState(340);
+  const [history, setHistory] = useState([]);
 
   const toggleFilter = (f) =>
     setFilters(prev => prev.includes(f) ? prev.filter(x => x !== f) : [...prev, f]);
@@ -130,6 +131,13 @@ export default function MealDecider() {
     update();
     window.addEventListener('resize', update);
     return () => window.removeEventListener('resize', update);
+  }, []);
+
+  useEffect(() => {
+    try {
+      const stored = JSON.parse(localStorage.getItem('mealHistory') || '[]');
+      setHistory(stored);
+    } catch {}
   }, []);
 
   useEffect(() => {
@@ -165,6 +173,7 @@ export default function MealDecider() {
     setSelectedMeal(null);
     setRecipe('');
     velocityRef.current = Math.random() * 0.15 + 0.22;
+    const currentIngredients = ingredients;
 
     const animate = () => {
       angleRef.current += velocityRef.current;
@@ -174,8 +183,10 @@ export default function MealDecider() {
         animRef.current = requestAnimationFrame(animate);
       } else {
         const idx = getSelectedIndex(angleRef.current, mealsRef.current.length);
-        setSelectedMeal(mealsRef.current[idx]);
+        const winner = mealsRef.current[idx];
+        setSelectedMeal(winner);
         setSpinning(false);
+        saveToHistory(winner, currentIngredients);
       }
     };
     animRef.current = requestAnimationFrame(animate);
@@ -215,6 +226,19 @@ export default function MealDecider() {
     a.click();
     URL.revokeObjectURL(url);
   };
+
+  const saveToHistory = useCallback((meal, currentIngredients) => {
+    setHistory(prev => {
+      const entry = {
+        meal,
+        date: new Date().toLocaleDateString(),
+        ingredients: currentIngredients,
+      };
+      const updated = [entry, ...prev.filter(h => h.meal !== meal)].slice(0, 10);
+      localStorage.setItem('mealHistory', JSON.stringify(updated));
+      return updated;
+    });
+  }, []);
 
   return (
     <div className={styles.container}>
@@ -332,6 +356,18 @@ export default function MealDecider() {
       {error && (
         <div style={{ color: '#ff6b6b', fontSize: '0.9rem', textAlign: 'center' }}>
           ⚠️ {error}
+        </div>
+      )}
+
+      {history.length > 0 && (
+        <div className={styles.card}>
+          <span className={styles.label}>Recent Meals</span>
+          {history.map((h, i) => (
+            <div key={i} className={styles.historyItem}>
+              <span className={styles.historyMeal}>{h.meal}</span>
+              <span className={styles.historyMeta}>{h.date}</span>
+            </div>
+          ))}
         </div>
       )}
     </div>

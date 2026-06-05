@@ -212,3 +212,25 @@
     font-size: 0.9rem;
   }
 }
+
+.historyItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #1e1e3a;
+  font-size: 0.9rem;
+}
+
+.historyItem:last-child {
+  border-bottom: none;
+}
+
+.historyMeal {
+  color: #ddd;
+}
+
+.historyMeta {
+  color: #555;
+  font-size: 0.8rem;
+}
