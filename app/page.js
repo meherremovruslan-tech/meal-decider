@@ -323,6 +323,9 @@ export default function MealDecider() {
             >
               {spinning ? 'Spinning...' : '🎲 SPIN'}
             </button>
+            {selectedMeal && !spinning && (
+              <p className={styles.spinHint}>Not feeling it? Spin again!</p>
+            )}
           </div>
         </div>
       )}
