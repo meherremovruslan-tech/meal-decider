@@ -1,18 +1,24 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-html, body {
-  width: 100%;
-  min-height: 100vh;
+html {
+  height: 100%;
   background: #0f0f1a;
   overflow-x: hidden;
-  /* Firefox scrollbar */
   scrollbar-color: #2a2a4a #0f0f1a;
   scrollbar-width: thin;
 }
 
 body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100vh;
+  background: #0f0f1a;
   color: #eee;
   font-family: 'Segoe UI', system-ui, sans-serif;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
 }
 
 /* Webkit scrollbar (Chrome, Edge) */
