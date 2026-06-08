@@ -1,0 +1,178 @@
+.page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #0f0f1a;
+  padding: 20px;
+}
+
+.card {
+  background: #1a1a2e;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
+  padding: 32px;
+  width: 100%;
+  max-width: 400px;
+}
+
+.logo {
+  text-align: center;
+  font-size: 20px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 4px;
+}
+
+.subtitle {
+  text-align: center;
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 24px;
+}
+
+.field {
+  margin-bottom: 16px;
+}
+
+.fieldHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+.label {
+  font-size: 13px;
+  color: #ccc;
+}
+
+.hint {
+  font-size: 11px;
+  color: #666;
+}
+
+.forgotLink {
+  font-size: 12px;
+  color: #667eea;
+  text-decoration: none;
+}
+
+.forgotLink:hover {
+  text-decoration: underline;
+}
+
+.input {
+  width: 100%;
+  padding: 10px 14px;
+  background: #0f0f1a;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 14px;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.15s;
+}
+
+.input:focus {
+  border-color: #667eea;
+}
+
+.input.error {
+  border-color: #ff6b6b;
+}
+
+.fieldError {
+  font-size: 12px;
+  color: #ff6b6b;
+  margin-top: 5px;
+}
+
+.btn {
+  width: 100%;
+  padding: 11px;
+  background: #667eea;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  margin-top: 8px;
+}
+
+.btn:hover:not(:disabled) {
+  opacity: 0.88;
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.links {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 13px;
+  color: #888;
+}
+
+.links a {
+  color: #667eea;
+  text-decoration: none;
+}
+
+.links a:hover {
+  text-decoration: underline;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.07);
+  margin: 20px 0;
+}
+
+.guestLink {
+  display: block;
+  text-align: center;
+  font-size: 12px;
+  color: #555;
+  text-decoration: none;
+  cursor: pointer;
+  padding: 4px 0;
+  background: none;
+  border: none;
+  width: 100%;
+}
+
+.guestLink:hover {
+  color: #888;
+}
+
+.banner {
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.bannerSuccess {
+  background: rgba(78, 205, 196, 0.1);
+  border: 1px solid rgba(78, 205, 196, 0.3);
+  color: #4ecdc4;
+}
+
+.bannerError {
+  background: rgba(255, 107, 107, 0.1);
+  border: 1px solid rgba(255, 107, 107, 0.3);
+  color: #ff6b6b;
+}
+
+.icon {
+  text-align: center;
+  font-size: 40px;
+  margin-bottom: 12px;
+}
