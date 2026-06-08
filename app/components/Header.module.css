@@ -46,3 +46,31 @@
   transition: opacity 0.2s;
 }
 .btnSignUp:hover { opacity: 0.88; }
+
+.userRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.userEmail {
+  font-size: 0.8rem;
+  color: #888;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.btnSignOut {
+  background: transparent;
+  border: 1px solid #2a2a4a;
+  color: #888;
+  padding: 5px 12px;
+  border-radius: 8px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s, color 0.2s;
+}
+.btnSignOut:hover { border-color: #6c6cff; color: #aaa; }

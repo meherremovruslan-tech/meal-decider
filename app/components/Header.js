@@ -1,24 +1,29 @@
 'use client';
-import { SignInButton, SignUpButton, UserButton, useUser } from '@clerk/nextjs';
+import { useSession, signOut } from 'next-auth/react';
+import Link from 'next/link';
 import styles from './Header.module.css';
 
 export default function Header() {
-  const { isSignedIn } = useUser();
+  const { data: session } = useSession();
 
   return (
     <header className={styles.header}>
       <span className={styles.logo}>🎰 Meal Decider</span>
       <div className={styles.authRow}>
-        {isSignedIn ? (
-          <UserButton afterSignOutUrl="/" />
+        {session ? (
+          <div className={styles.userRow}>
+            <span className={styles.userEmail}>{session.user.email}</span>
+            <button
+              className={styles.btnSignOut}
+              onClick={() => signOut({ callbackUrl: '/login' })}
+            >
+              Sign Out
+            </button>
+          </div>
         ) : (
           <>
-            <SignInButton mode="modal">
-              <button className={styles.btnSignIn}>Sign In</button>
-            </SignInButton>
-            <SignUpButton mode="modal">
-              <button className={styles.btnSignUp}>Sign Up</button>
-            </SignUpButton>
+            <Link href="/login" className={styles.btnSignIn}>Sign In</Link>
+            <Link href="/register" className={styles.btnSignUp}>Sign Up</Link>
           </>
         )}
       </div>
