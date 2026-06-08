@@ -10,7 +10,7 @@ export default function Header() {
     <header className={styles.header}>
       <span className={styles.logo}>🎰 Meal Decider</span>
       <div className={styles.authRow}>
-        {session ? (
+        {session && (
           <div className={styles.userRow}>
             <span className={styles.userEmail}>{session.user.email}</span>
             <button
@@ -20,11 +20,6 @@ export default function Header() {
               Sign Out
             </button>
           </div>
-        ) : (
-          <>
-            <Link href="/login" className={styles.btnSignIn}>Sign In</Link>
-            <Link href="/register" className={styles.btnSignUp}>Sign Up</Link>
-          </>
         )}
       </div>
     </header>
