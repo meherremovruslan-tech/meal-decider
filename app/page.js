@@ -1,6 +1,7 @@
 'use client';
 import { useState, useRef, useEffect } from 'react';
-import { useUser, SignUpButton } from '@clerk/nextjs';
+import { useSession } from 'next-auth/react';
+import Link from 'next/link';
 import styles from './page.module.css';
 import './globals.css';
 
@@ -93,7 +94,8 @@ function renderRecipe(text) {
 }
 
 export default function MealDecider() {
-  const { isSignedIn } = useUser();
+  const { data: session } = useSession();
+  const isSignedIn = !!session;
 
   const [ingredients, setIngredients] = useState('');
   const [meals, setMeals] = useState([]);
@@ -146,7 +148,7 @@ export default function MealDecider() {
 
   // Load history from correct source when auth state resolves
   useEffect(() => {
-    if (isSignedIn === undefined) return; // Clerk still loading
+    if (session === undefined) return; // session still loading
 
     if (isSignedIn) {
       setSpinGate(false);
@@ -439,11 +441,9 @@ export default function MealDecider() {
                   You've used your 3 free spins today.<br />
                   Sign up to spin unlimited.
                 </p>
-                <SignUpButton mode="modal">
-                  <button className={`${styles.btn} ${styles.btnSignUpGate}`}>
-                    Sign Up — It's Free
-                  </button>
-                </SignUpButton>
+                <Link href="/register" className={`${styles.btn} ${styles.btnSignUpGate}`}>
+                  Sign Up — It's Free
+                </Link>
               </div>
             ) : (
               <button
