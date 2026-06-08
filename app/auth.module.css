@@ -176,3 +176,26 @@
   font-size: 40px;
   margin-bottom: 12px;
 }
+
+.btnGoogle {
+  width: 100%;
+  padding: 11px;
+  background: #fff;
+  color: #3c4043;
+  border: 1px solid #dadce0;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: background 0.15s, box-shadow 0.15s;
+  margin-top: 0;
+}
+
+.btnGoogle:hover {
+  background: #f8f9fa;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+}
