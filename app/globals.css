@@ -1,18 +1,21 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-html {
+html, body {
+  width: 100%;
+  min-height: 100vh;
   background: #0f0f1a;
   overflow-x: hidden;
+  /* Firefox scrollbar */
+  scrollbar-color: #2a2a4a #0f0f1a;
+  scrollbar-width: thin;
 }
 
 body {
-  background: #0f0f1a;
   color: #eee;
   font-family: 'Segoe UI', system-ui, sans-serif;
-  min-height: 100vh;
-  overflow-x: hidden;
 }
 
+/* Webkit scrollbar (Chrome, Edge) */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -26,4 +29,7 @@ body {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #3a3a6a;
+}
+::-webkit-scrollbar-corner {
+  background: #0f0f1a;
 }
