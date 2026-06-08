@@ -155,6 +155,7 @@ export default function MealDecider() {
         .then(data => {
           if (data.history) {
             setHistory(data.history.map(h => ({
+              id: h.id,
               meal: h.meal_name,
               date: new Date(h.created_at).toLocaleDateString(),
               ingredients: h.ingredients,
@@ -303,6 +304,7 @@ export default function MealDecider() {
             .then(data => {
               if (data.history) {
                 setHistory(data.history.map(h => ({
+                  id: h.id,
                   meal: h.meal_name,
                   date: new Date(h.created_at).toLocaleDateString(),
                   ingredients: h.ingredients,
@@ -517,7 +519,7 @@ export default function MealDecider() {
         <div className={styles.card}>
           <span className={styles.label}>Recent Meals</span>
           {history.map((h) => (
-            <div key={h.meal} className={styles.historyItem}>
+            <div key={h.id ?? h.meal} className={styles.historyItem}>
               <span className={styles.historyMeal}>{h.meal}</span>
               <span className={styles.historyMeta}>{h.date}</span>
             </div>

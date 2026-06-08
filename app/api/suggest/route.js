@@ -9,12 +9,15 @@ export async function POST(req) {
       return Response.json({ error: 'No ingredients provided' }, { status: 400 });
     }
 
+    const ALLOWED_CUISINES = ['Asian', 'Italian', 'Turkish', 'Mexican', 'Mediterranean'];
+    const safeCuisine = ALLOWED_CUISINES.includes(cuisine) ? cuisine : null;
+
     const filterText = filters?.length
       ? `\nDietary requirements (ALL meals MUST comply): ${filters.join(', ')}.`
       : '';
 
-    const cuisineText = cuisine
-      ? `\nCuisine style: ${cuisine} cuisine only.`
+    const cuisineText = safeCuisine
+      ? `\nCuisine style: ${safeCuisine} cuisine only.`
       : '';
 
     const message = await client.messages.create({

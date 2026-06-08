@@ -58,6 +58,7 @@ export async function POST() {
 function attachSessionCookie(response, sessionId) {
   response.cookies.set('guest_session_id', sessionId, {
     httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
     sameSite: 'lax',
     maxAge: 60 * 60 * 24 * 365,
     path: '/',
