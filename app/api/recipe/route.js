@@ -1,5 +1,6 @@
 import Anthropic from '@anthropic-ai/sdk';
-import { auth } from '@clerk/nextjs/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 import { supabase } from '@/lib/supabase';
 
 const client = new Anthropic();
@@ -46,11 +47,10 @@ Keep it practical and under 400 words.`,
 
     const recipe = message.content[0].text;
 
-    // Save to Supabase for logged-in users — fire-and-forget, don't block the response
-    const { userId } = await auth();
-    if (userId) {
+    const session = await getServerSession(authOptions);
+    if (session) {
       supabase.from('recipe_history').insert({
-        user_id: userId,
+        user_id: session.user.id,
         meal_name: meal,
         recipe,
         ingredients: ingredients || '',

@@ -1,14 +1,15 @@
-import { auth } from '@clerk/nextjs/server';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/lib/auth';
 import { supabase } from '@/lib/supabase';
 
 export async function GET() {
-  const { userId } = await auth();
-  if (!userId) return Response.json({ error: 'Unauthorized' }, { status: 401 });
+  const session = await getServerSession(authOptions);
+  if (!session) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
   const { data, error } = await supabase
     .from('recipe_history')
     .select('id, meal_name, ingredients, dietary_filters, cuisine, created_at')
-    .eq('user_id', userId)
+    .eq('user_id', session.user.id)
     .order('created_at', { ascending: false })
     .limit(50);
 
@@ -17,14 +18,14 @@ export async function GET() {
 }
 
 export async function POST(req) {
-  const { userId } = await auth();
-  if (!userId) return Response.json({ error: 'Unauthorized' }, { status: 401 });
+  const session = await getServerSession(authOptions);
+  if (!session) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
   const { meal_name, recipe, ingredients, dietary_filters, cuisine } = await req.json();
   if (!meal_name) return Response.json({ error: 'meal_name required' }, { status: 400 });
 
   const { error } = await supabase.from('recipe_history').insert({
-    user_id: userId,
+    user_id: session.user.id,
     meal_name,
     recipe: recipe || '',
     ingredients: ingredients || '',
