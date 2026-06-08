@@ -72,7 +72,6 @@ function LoginForm() {
     <div className={styles.page}>
       <div className={styles.card}>
         <div className={styles.logo}>🎰 Meal Decider</div>
-        <div className={styles.subtitle}>Sign in to save your history</div>
 
         {banner && (
           <div className={`${styles.banner} ${bannerType === 'success' ? styles.bannerSuccess : styles.bannerError}`}>
