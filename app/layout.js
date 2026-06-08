@@ -1,5 +1,4 @@
-import { ClerkProvider } from '@clerk/nextjs';
-import { dark } from '@clerk/themes';
+import Providers from './components/Providers';
 import Header from './components/Header';
 
 export const metadata = {
@@ -9,13 +8,13 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <ClerkProvider appearance={{ baseTheme: dark }}>
+    <Providers>
       <html lang="en">
         <body>
           <Header />
           {children}
         </body>
       </html>
-    </ClerkProvider>
+    </Providers>
   );
 }
