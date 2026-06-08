@@ -1,11 +1,12 @@
 'use client';
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { useUser, SignUpButton } from '@clerk/nextjs';
 import styles from './page.module.css';
 import './globals.css';
 
 const COLORS = ['#FF6B6B','#4ECDC4','#45B7D1','#96CEB4','#FFEAA7','#DDA0DD','#98D8C8','#F7DC6F'];
-
 const DIETARY_FILTERS = ['Vegetarian', 'Vegan', 'Gluten-free', 'Dairy-free'];
+const CUISINE_FILTERS = ['Asian', 'Italian', 'Turkish', 'Mexican', 'Mediterranean'];
 
 function drawWheel(canvas, meals, angle) {
   if (!canvas || meals.length === 0) return;
@@ -42,14 +43,12 @@ function drawWheel(canvas, meals, angle) {
     ctx.restore();
   }
 
-  // Outer ring
   ctx.beginPath();
   ctx.arc(cx, cy, r, 0, 2 * Math.PI);
   ctx.strokeStyle = 'rgba(255,255,255,0.15)';
   ctx.lineWidth = 4;
   ctx.stroke();
 
-  // Center dot
   ctx.beginPath();
   ctx.arc(cx, cy, 18, 0, 2 * Math.PI);
   ctx.fillStyle = '#0f0f1a';
@@ -58,7 +57,6 @@ function drawWheel(canvas, meals, angle) {
   ctx.lineWidth = 2;
   ctx.stroke();
 
-  // Pointer (right side, pointing left into wheel)
   ctx.save();
   ctx.shadowColor = '#e74c3c';
   ctx.shadowBlur = 10;
@@ -95,6 +93,8 @@ function renderRecipe(text) {
 }
 
 export default function MealDecider() {
+  const { isSignedIn } = useUser();
+
   const [ingredients, setIngredients] = useState('');
   const [meals, setMeals] = useState([]);
   const [selectedMeal, setSelectedMeal] = useState(null);
@@ -104,12 +104,11 @@ export default function MealDecider() {
   const [spinning, setSpinning] = useState(false);
   const [error, setError] = useState('');
   const [filters, setFilters] = useState([]);
+  const [cuisine, setCuisine] = useState('');
   const [canvasSize, setCanvasSize] = useState(340);
   const [history, setHistory] = useState([]);
   const [shareLabel, setShareLabel] = useState('🔗 Share');
-
-  const toggleFilter = (f) =>
-    setFilters(prev => prev.includes(f) ? prev.filter(x => x !== f) : [...prev, f]);
+  const [spinGate, setSpinGate] = useState(false);
 
   const canvasRef = useRef(null);
   const angleRef = useRef(0);
@@ -118,17 +117,21 @@ export default function MealDecider() {
   const mealsRef = useRef([]);
   const isInitialHistoryMount = useRef(true);
 
+  const toggleFilter = (f) =>
+    setFilters(prev => prev.includes(f) ? prev.filter(x => x !== f) : [...prev, f]);
+
+  const toggleCuisine = (c) =>
+    setCuisine(prev => prev === c ? '' : c);
+
   useEffect(() => { mealsRef.current = meals; }, [meals]);
 
+  // Reset meals when filters or cuisine change
   useEffect(() => {
     setMeals(prev => {
-      if (prev.length > 0) {
-        setSelectedMeal(null);
-        setRecipe('');
-      }
+      if (prev.length > 0) { setSelectedMeal(null); setRecipe(''); }
       return [];
     });
-  }, [filters]);
+  }, [filters, cuisine]);
 
   useEffect(() => {
     const update = () => setCanvasSize(Math.min(window.innerWidth - 48, 340));
@@ -141,20 +144,63 @@ export default function MealDecider() {
     return () => { if (animRef.current) cancelAnimationFrame(animRef.current); };
   }, []);
 
+  // Load history from correct source when auth state resolves
   useEffect(() => {
-    try {
-      const stored = JSON.parse(localStorage.getItem('mealHistory') || '[]');
-      setHistory(stored);
-    } catch {}
-  }, []);
+    if (isSignedIn === undefined) return; // Clerk still loading
 
-  useEffect(() => {
-    if (isInitialHistoryMount.current) {
+    if (isSignedIn) {
+      setSpinGate(false);
+      fetch('/api/history')
+        .then(r => r.json())
+        .then(data => {
+          if (data.history) {
+            setHistory(data.history.map(h => ({
+              meal: h.meal_name,
+              date: new Date(h.created_at).toLocaleDateString(),
+              ingredients: h.ingredients,
+            })));
+          }
+        })
+        .catch(() => {});
+
+      // Migrate any existing localStorage history to Supabase silently
+      try {
+        const local = JSON.parse(localStorage.getItem('mealHistory') || '[]');
+        if (local.length > 0) {
+          Promise.all(
+            local.map(h =>
+              fetch('/api/history', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  meal_name: h.meal,
+                  recipe: '',
+                  ingredients: h.ingredients || '',
+                  dietary_filters: [],
+                  cuisine: null,
+                }),
+              })
+            )
+          )
+            .then(() => localStorage.removeItem('mealHistory'))
+            .catch(() => {});
+        }
+      } catch {}
+    } else {
+      // Guest: load from localStorage
+      try {
+        const stored = JSON.parse(localStorage.getItem('mealHistory') || '[]');
+        setHistory(stored);
+      } catch {}
       isInitialHistoryMount.current = false;
-      return;
     }
+  }, [isSignedIn]);
+
+  // Persist guest history to localStorage (skipped for logged-in users)
+  useEffect(() => {
+    if (isSignedIn || isInitialHistoryMount.current) return;
     localStorage.setItem('mealHistory', JSON.stringify(history));
-  }, [history]);
+  }, [history, isSignedIn]);
 
   useEffect(() => {
     if (meals.length > 0) drawWheel(canvasRef.current, meals, angleRef.current);
@@ -171,7 +217,11 @@ export default function MealDecider() {
       const res = await fetch('/api/suggest', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ingredients, filters }),
+        body: JSON.stringify({
+          ingredients,
+          filters,
+          cuisine: isSignedIn ? cuisine : undefined,
+        }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to get suggestions');
@@ -183,19 +233,22 @@ export default function MealDecider() {
     }
   };
 
-  const saveToHistory = useCallback((meal, currentIngredients) => {
-    setHistory(prev => {
-      const entry = {
-        meal,
-        date: new Date().toLocaleDateString(),
-        ingredients: currentIngredients,
-      };
-      return [entry, ...prev.filter(h => h.meal !== meal)].slice(0, 10);
-    });
-  }, []);
-
-  const spin = () => {
+  const spin = async () => {
     if (spinning || meals.length === 0) return;
+
+    if (!isSignedIn) {
+      try {
+        const res = await fetch('/api/spin-check', { method: 'POST' });
+        const data = await res.json();
+        if (!data.allowed) {
+          setSpinGate(true);
+          return;
+        }
+      } catch {
+        // Network error: allow spin rather than blocking user
+      }
+    }
+
     setSpinning(true);
     setSelectedMeal(null);
     setRecipe('');
@@ -209,8 +262,7 @@ export default function MealDecider() {
         animRef.current = requestAnimationFrame(animate);
       } else {
         const idx = getSelectedIndex(angleRef.current, mealsRef.current.length);
-        const winner = mealsRef.current[idx];
-        setSelectedMeal(winner);
+        setSelectedMeal(mealsRef.current[idx]);
         setSpinning(false);
       }
     };
@@ -226,12 +278,40 @@ export default function MealDecider() {
       const res = await fetch('/api/recipe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ meal: selectedMeal, ingredients, filters }),
+        body: JSON.stringify({
+          meal: selectedMeal,
+          ingredients,
+          filters,
+          cuisine: isSignedIn ? cuisine : undefined,
+        }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to get recipe');
       setRecipe(data.recipe);
-      saveToHistory(selectedMeal, ingredients);
+
+      if (!isSignedIn) {
+        // Update guest localStorage history
+        setHistory(prev => {
+          const entry = { meal: selectedMeal, date: new Date().toLocaleDateString(), ingredients };
+          return [entry, ...prev.filter(h => h.meal !== selectedMeal)].slice(0, 10);
+        });
+      } else {
+        // Refresh Supabase history after save (500ms to let the insert complete)
+        setTimeout(() => {
+          fetch('/api/history')
+            .then(r => r.json())
+            .then(data => {
+              if (data.history) {
+                setHistory(data.history.map(h => ({
+                  meal: h.meal_name,
+                  date: new Date(h.created_at).toLocaleDateString(),
+                  ingredients: h.ingredients,
+                })));
+              }
+            })
+            .catch(() => {});
+        }, 500);
+      }
     } catch (e) {
       setError(e.message);
     } finally {
@@ -294,6 +374,8 @@ export default function MealDecider() {
             {loadingSuggest ? '...' : 'Suggest'}
           </button>
         </div>
+
+        {/* Dietary filters — all users */}
         <div className={styles.filterRow}>
           {DIETARY_FILTERS.map(f => (
             <label
@@ -310,6 +392,26 @@ export default function MealDecider() {
             </label>
           ))}
         </div>
+
+        {/* Cuisine filter — logged-in users only */}
+        {isSignedIn && (
+          <div className={styles.cuisineSection}>
+            <span className={styles.cuisineLabel}>Cuisine</span>
+            <div className={styles.filterRow}>
+              {CUISINE_FILTERS.map(c => (
+                <button
+                  key={c}
+                  type="button"
+                  className={`${styles.filterChip} ${styles.cuisineChip} ${cuisine === c ? styles.cuisineChipActive : ''}`}
+                  onClick={() => toggleCuisine(c)}
+                >
+                  {c}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         {loadingSuggest && (
           <div className={styles.loading} style={{ marginTop: 12 }}>
             <span className={styles.spinner} /> AI is thinking of meals...
@@ -328,14 +430,30 @@ export default function MealDecider() {
               width={canvasSize}
               height={canvasSize}
             />
-            <button
-              className={`${styles.btn} ${styles.btnSpin}`}
-              onClick={spin}
-              disabled={spinning}
-            >
-              {spinning ? 'Spinning...' : '🎲 SPIN'}
-            </button>
-            {selectedMeal && !spinning && (
+
+            {spinGate ? (
+              <div className={styles.spinGate}>
+                <p className={styles.spinGateText}>
+                  You've used your 3 free spins today.<br />
+                  Sign up to spin unlimited.
+                </p>
+                <SignUpButton mode="modal">
+                  <button className={`${styles.btn} ${styles.btnSignUpGate}`}>
+                    Sign Up — It's Free
+                  </button>
+                </SignUpButton>
+              </div>
+            ) : (
+              <button
+                className={`${styles.btn} ${styles.btnSpin}`}
+                onClick={spin}
+                disabled={spinning}
+              >
+                {spinning ? 'Spinning...' : '🎲 SPIN'}
+              </button>
+            )}
+
+            {selectedMeal && !spinning && !spinGate && (
               <p className={styles.spinHint}>Not feeling it? Spin again!</p>
             )}
           </div>
@@ -398,7 +516,7 @@ export default function MealDecider() {
       {history.length > 0 && (
         <div className={styles.card}>
           <span className={styles.label}>Recent Meals</span>
-          {history.map((h, i) => (
+          {history.map((h) => (
             <div key={h.meal} className={styles.historyItem}>
               <span className={styles.historyMeal}>{h.meal}</span>
               <span className={styles.historyMeta}>{h.date}</span>
