@@ -1,7 +1,6 @@
 import bcrypt from 'bcryptjs';
 import { supabase } from '@/lib/supabase';
-import { createVerificationToken } from '@/lib/tokens';
-import { sendVerificationEmail } from '@/lib/email';
+import { randomAvatar } from '@/lib/avatars';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PASSWORD_REGEX = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
@@ -40,16 +39,11 @@ export async function POST(req) {
 
     const password_hash = await bcrypt.hash(password, 12);
 
-    const { data: user, error: insertError } = await supabase
+    const { error: insertError } = await supabase
       .from('users')
-      .insert({ email: normalizedEmail, password_hash })
-      .select('id')
-      .single();
+      .insert({ email: normalizedEmail, password_hash, avatar_emoji: randomAvatar(), email_verified: true });
 
     if (insertError) throw insertError;
-
-    const token = await createVerificationToken(user.id);
-    await sendVerificationEmail(normalizedEmail, token);
 
     return Response.json({ success: true });
   } catch (e) {

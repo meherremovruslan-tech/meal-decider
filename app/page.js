@@ -4,6 +4,8 @@ import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import styles from './page.module.css';
 import './globals.css';
+import { renderRecipe } from '@/lib/renderRecipe';
+import FridgeIcon from './components/FridgeIcon';
 
 const COLORS = ['#FF6B6B','#4ECDC4','#45B7D1','#96CEB4','#FFEAA7','#DDA0DD','#98D8C8','#F7DC6F'];
 const DIETARY_FILTERS = ['Vegetarian', 'Vegan', 'Gluten-free', 'Dairy-free'];
@@ -77,21 +79,6 @@ function getSelectedIndex(angle, n) {
   return Math.floor(norm / slice) % n;
 }
 
-function renderRecipe(text) {
-  return text.split('\n').map((line, i) => {
-    if (/^#{1,3}\s/.test(line)) {
-      return <div key={i} style={{ color: '#f7c948', fontWeight: 700, marginTop: 12, marginBottom: 4 }}>{line.replace(/^#+\s/, '')}</div>;
-    }
-    if (/^\*\*(.+)\*\*$/.test(line)) {
-      return <div key={i} style={{ color: '#f7c948', fontWeight: 700, marginTop: 10, marginBottom: 2 }}>{line.replace(/\*\*/g, '')}</div>;
-    }
-    if (/^[-•*]\s/.test(line)) {
-      return <div key={i} style={{ paddingLeft: 12 }}>• {line.replace(/^[-•*]\s/, '')}</div>;
-    }
-    if (line.trim() === '') return <div key={i} style={{ height: 6 }} />;
-    return <div key={i}>{line}</div>;
-  });
-}
 
 export default function MealDecider() {
   const { data: session } = useSession();
@@ -106,11 +93,22 @@ export default function MealDecider() {
   const [spinning, setSpinning] = useState(false);
   const [error, setError] = useState('');
   const [filters, setFilters] = useState([]);
-  const [cuisine, setCuisine] = useState('');
+  const [cuisine, setCuisine] = useState([]);
   const [canvasSize, setCanvasSize] = useState(340);
   const [history, setHistory] = useState([]);
+  const [expandedHistoryId, setExpandedHistoryId] = useState(null);
   const [shareLabel, setShareLabel] = useState('🔗 Share');
   const [spinGate, setSpinGate] = useState(false);
+
+  const [pantryLists, setPantryLists] = useState([]);
+  const [pantryLoaded, setPantryLoaded] = useState(false);
+  const [showPantryModal, setShowPantryModal] = useState(false);
+  const [showGuestPantryNudge, setShowGuestPantryNudge] = useState(false);
+  const [activePantryTab, setActivePantryTab] = useState(0);
+  const [pantrySelected, setPantrySelected] = useState(new Set());
+  const [pantryExtras, setPantryExtras] = useState([]);
+  const [extraIngredientInput, setExtraIngredientInput] = useState('');
+  const [pantryError, setPantryError] = useState('');
 
   const canvasRef = useRef(null);
   const angleRef = useRef(0);
@@ -123,7 +121,7 @@ export default function MealDecider() {
     setFilters(prev => prev.includes(f) ? prev.filter(x => x !== f) : [...prev, f]);
 
   const toggleCuisine = (c) =>
-    setCuisine(prev => prev === c ? '' : c);
+    setCuisine(prev => prev.includes(c) ? prev.filter(x => x !== c) : [...prev, c]);
 
   useEffect(() => { mealsRef.current = meals; }, [meals]);
 
@@ -133,7 +131,8 @@ export default function MealDecider() {
       if (prev.length > 0) { setSelectedMeal(null); setRecipe(''); }
       return [];
     });
-  }, [filters, cuisine]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters, JSON.stringify(cuisine)]);
 
   useEffect(() => {
     const update = () => setCanvasSize(Math.min(window.innerWidth - 48, 340));
@@ -161,6 +160,7 @@ export default function MealDecider() {
               meal: h.meal_name,
               date: new Date(h.created_at).toLocaleDateString(),
               ingredients: h.ingredients,
+              recipe: h.recipe,
             })));
           }
         })
@@ -310,6 +310,7 @@ export default function MealDecider() {
                   meal: h.meal_name,
                   date: new Date(h.created_at).toLocaleDateString(),
                   ingredients: h.ingredients,
+                  recipe: h.recipe,
                 })));
               }
             })
@@ -352,6 +353,86 @@ export default function MealDecider() {
     URL.revokeObjectURL(url);
   };
 
+  const openPantryModal = async () => {
+    if (!isSignedIn) {
+      setShowGuestPantryNudge(true);
+      return;
+    }
+    setPantryExtras([]);
+    setExtraIngredientInput('');
+    setPantryError('');
+    setActivePantryTab(null);
+    setShowPantryModal(true);
+    setPantrySelected(new Set());
+    if (pantryLoaded) return;
+    try {
+      const res = await fetch('/api/pantry');
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to load pantry lists');
+      setPantryLists(data.lists || []);
+    } catch (e) {
+      setPantryError(e.message || 'Failed to load pantry lists');
+    } finally {
+      setPantryLoaded(true);
+    }
+  };
+
+  const closePantryModal = () => {
+    setShowPantryModal(false);
+    setPantrySelected(new Set());
+    setPantryExtras([]);
+    setExtraIngredientInput('');
+  };
+
+  const togglePantryIngredient = (ing) => {
+    setPantrySelected(prev => {
+      const next = new Set(prev);
+      if (next.has(ing)) next.delete(ing); else next.add(ing);
+      return next;
+    });
+  };
+
+  const addExtraIngredient = () => {
+    const raw = extraIngredientInput.trim();
+    if (!raw) return;
+    const seen = new Set(pantryExtras.map(x => x.toLowerCase()));
+    const toAdd = [];
+    for (const piece of raw.split(',')) {
+      const value = piece.trim();
+      if (!value) continue;
+      const lower = value.toLowerCase();
+      if (seen.has(lower)) continue;
+      seen.add(lower);
+      toAdd.push(value);
+    }
+    if (toAdd.length > 0) {
+      setPantryExtras(prev => [...prev, ...toAdd]);
+      setPantrySelected(prev => {
+        const next = new Set(prev);
+        toAdd.forEach(v => next.add(v));
+        return next;
+      });
+    }
+    setExtraIngredientInput('');
+  };
+
+  const removeExtraIngredient = (ing) => {
+    setPantryExtras(prev => prev.filter(x => x !== ing));
+    setPantrySelected(prev => {
+      const next = new Set(prev);
+      next.delete(ing);
+      return next;
+    });
+  };
+
+  const confirmPantrySelection = () => {
+    const existing = ingredients.split(',').map(s => s.trim()).filter(Boolean);
+    const existingLower = existing.map(s => s.toLowerCase());
+    const toAdd = [...pantrySelected].filter(ing => !existingLower.includes(ing.toLowerCase()));
+    setIngredients([...existing, ...toAdd].join(', '));
+    closePantryModal();
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -376,6 +457,13 @@ export default function MealDecider() {
             disabled={loadingSuggest || !ingredients.trim()}
           >
             {loadingSuggest ? '...' : 'Suggest'}
+          </button>
+          <button
+            type="button"
+            className={`${styles.btn} ${styles.btnPantry}`}
+            onClick={openPantryModal}
+          >
+            <FridgeIcon /> Load from Pantry{!isSignedIn && ' 🔒'}
           </button>
         </div>
 
@@ -406,7 +494,7 @@ export default function MealDecider() {
                 <button
                   key={c}
                   type="button"
-                  className={`${styles.filterChip} ${styles.cuisineChip} ${cuisine === c ? styles.cuisineChipActive : ''}`}
+                  className={`${styles.filterChip} ${styles.cuisineChip} ${cuisine.includes(c) ? styles.cuisineChipActive : ''}`}
                   onClick={() => toggleCuisine(c)}
                 >
                   {c}
@@ -519,11 +607,149 @@ export default function MealDecider() {
         <div className={styles.card}>
           <span className={styles.label}>Recent Meals</span>
           {history.map((h) => (
-            <div key={h.id ?? h.meal} className={styles.historyItem}>
-              <span className={styles.historyMeal}>{h.meal}</span>
-              <span className={styles.historyMeta}>{h.date}</span>
+            <div
+              key={h.id ?? h.meal}
+              className={styles.historyItem}
+              onClick={() => setExpandedHistoryId(expandedHistoryId === (h.id ?? h.meal) ? null : (h.id ?? h.meal))}
+              style={{ cursor: h.recipe ? 'pointer' : 'default' }}
+            >
+              <div className={styles.historyItemTop}>
+                <span className={styles.historyMeal}>{h.meal}</span>
+                <span className={styles.historyMeta}>{h.date}</span>
+              </div>
+              {expandedHistoryId === (h.id ?? h.meal) && h.recipe && (
+                <div className={styles.historyRecipe}>
+                  {renderRecipe(h.recipe)}
+                </div>
+              )}
             </div>
           ))}
+        </div>
+      )}
+
+      {showPantryModal && (
+        <div className={styles.modalOverlay} onClick={closePantryModal}>
+          <div className={styles.modal} onClick={e => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <span><FridgeIcon size={20} /> Load from Pantry</span>
+              <button type="button" className={styles.modalClose} onClick={closePantryModal}>×</button>
+            </div>
+
+            {pantryError && (
+              <div style={{ color: '#ff6b6b', fontSize: '0.85rem', marginBottom: 8 }}>
+                ⚠️ {pantryError}
+              </div>
+            )}
+
+            {!pantryLoaded ? (
+              <p className={styles.placeholder}>Loading…</p>
+            ) : pantryError ? null : pantryLists.length === 0 ? (
+              <div className={styles.modalBody}>
+                <p className={styles.placeholder}>No pantry lists yet. Add them from your Profile.</p>
+                <Link href="/profile" className={`${styles.btn} ${styles.btnPrimary}`} onClick={closePantryModal}>
+                  Go to Profile →
+                </Link>
+              </div>
+            ) : (
+              <div className={styles.modalBody}>
+                <div className={styles.pantryTabs}>
+                  {pantryLists.map((list, i) => (
+                    <button
+                      key={list.id}
+                      type="button"
+                      className={`${styles.pantryTab} ${activePantryTab === i ? styles.pantryTabActive : ''}`}
+                      onClick={() => {
+                        setActivePantryTab(i);
+                        setPantrySelected(prev => new Set([...prev, ...list.ingredients]));
+                      }}
+                    >
+                      {list.name}
+                    </button>
+                  ))}
+                </div>
+
+                <div className={styles.filterRow}>
+                  {activePantryTab === null ? (
+                    <span className={styles.placeholder}>Select a pantry list above to choose its ingredients.</span>
+                  ) : (pantryLists[activePantryTab]?.ingredients || []).length === 0 ? (
+                    <span className={styles.placeholder}>No ingredients in this list yet.</span>
+                  ) : (
+                    pantryLists[activePantryTab].ingredients.map(ing => (
+                      <button
+                        key={ing}
+                        type="button"
+                        className={`${styles.filterChip} ${styles.cuisineChip} ${pantrySelected.has(ing) ? styles.filterChipActive : ''}`}
+                        onClick={() => togglePantryIngredient(ing)}
+                      >
+                        {pantrySelected.has(ing) ? `✓ ${ing}` : ing}
+                      </button>
+                    ))
+                  )}
+                </div>
+
+                {pantryExtras.length > 0 && (
+                  <div className={styles.filterRow}>
+                    {pantryExtras.map(ing => (
+                      <span key={ing} className={`${styles.filterChip} ${styles.filterChipActive}`}>
+                        ✓ {ing}
+                        <button type="button" className={styles.chipRemove} onClick={() => removeExtraIngredient(ing)}>×</button>
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                <div className={styles.inputRow} style={{ marginTop: 12 }}>
+                  <input
+                    className={styles.input}
+                    placeholder="Add extra ingredients (comma-separated)"
+                    value={extraIngredientInput}
+                    onChange={e => setExtraIngredientInput(e.target.value)}
+                    onKeyDown={e => e.key === 'Enter' && addExtraIngredient()}
+                    maxLength={200}
+                  />
+                  <button type="button" className={`${styles.btn} ${styles.btnSave}`} onClick={addExtraIngredient}>+</button>
+                </div>
+
+                <div className={styles.modalFooter}>
+                  <button type="button" className={`${styles.btn} ${styles.btnSave}`} onClick={closePantryModal}>
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    className={`${styles.btn} ${styles.btnPrimary}`}
+                    onClick={confirmPantrySelection}
+                    disabled={pantrySelected.size === 0}
+                  >
+                    Confirm — load {pantrySelected.size} ingredient{pantrySelected.size === 1 ? '' : 's'}
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {showGuestPantryNudge && (
+        <div className={styles.modalOverlay} onClick={() => setShowGuestPantryNudge(false)}>
+          <div className={styles.modal} onClick={e => e.stopPropagation()}>
+            <div className={styles.modalHeader}>
+              <span><FridgeIcon size={20} /> Pantry</span>
+              <button type="button" className={styles.modalClose} onClick={() => setShowGuestPantryNudge(false)}>×</button>
+            </div>
+            <div className={styles.modalBody}>
+              <p className={styles.modalTitle}>Save your ingredients to Pantry</p>
+              <p className={styles.modalSubtitle}>
+                Create up to 3 pantry lists and load them into Step 1 with one tap — sign up free to start.
+              </p>
+              <Link
+                href="/register"
+                className={`${styles.btn} ${styles.btnSignUpGate}`}
+                style={{ width: '100%', textAlign: 'center', display: 'block', marginTop: 16, boxSizing: 'border-box' }}
+              >
+                Sign Up — It's Free
+              </Link>
+            </div>
+          </div>
         </div>
       )}
     </div>

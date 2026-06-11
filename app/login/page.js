@@ -15,7 +15,9 @@ function LoginForm() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (searchParams.get('verified') === 'true') {
+    if (searchParams.get('registered') === 'true') {
+      setBanner('success:Account created! Sign in below.');
+    } else if (searchParams.get('verified') === 'true') {
       setBanner('success:Email verified! You can now sign in.');
     } else if (searchParams.get('reset') === 'true') {
       setBanner('success:Password reset! Sign in with your new password.');
@@ -96,7 +98,6 @@ function LoginForm() {
           <div className={styles.field}>
             <div className={styles.fieldHeader}>
               <div className={styles.label}>Password</div>
-              <Link href="/forgot-password" className={styles.forgotLink}>Forgot password?</Link>
             </div>
             <input
               className={styles.input}

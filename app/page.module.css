@@ -33,11 +33,12 @@
 
 .inputRow {
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
 }
 
 .input {
-  flex: 1;
+  flex: 1 1 200px;
   background: #0f0f1a;
   border: 1px solid #2a2a4a;
   border-radius: 10px;
@@ -247,9 +248,6 @@
 }
 
 .historyItem {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
   padding: 8px 0;
   border-bottom: 1px solid #1e1e3a;
   font-size: 0.9rem;
@@ -259,6 +257,12 @@
   border-bottom: none;
 }
 
+.historyItemTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .historyMeal {
   color: #ddd;
 }
@@ -266,6 +270,18 @@
 .historyMeta {
   color: #888;
   font-size: 0.8rem;
+  flex-shrink: 0;
+  margin-left: 12px;
+}
+
+.historyRecipe {
+  margin-top: 10px;
+  padding: 12px;
+  background: #0f0f1a;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #ccc;
+  line-height: 1.6;
 }
 
 /* Cuisine filter section */
@@ -328,3 +344,129 @@
   letter-spacing: 0.3px;
 }
 .btnSignUpGate:hover:not(:disabled) { opacity: 0.88; }
+
+/* Pantry button */
+.btnPantry {
+  background: #1e1e3a;
+  border: 1px solid #2a2a4a;
+  color: #aaa;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+.btnPantry:hover:not(:disabled) {
+  background: #252545;
+  color: #eee;
+  border-color: #6c6cff44;
+}
+
+/* Modal overlay & shell (used by Pantry picker + guest nudge) */
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 16px;
+}
+
+.modal {
+  background: #16162a;
+  border: 1px solid #2a2a4a;
+  border-radius: 16px;
+  padding: 20px;
+  width: 100%;
+  max-width: 440px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 16px;
+}
+
+.modalClose {
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+}
+.modalClose:hover { color: #fff; }
+
+.modalBody {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.modalTitle {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #fff;
+  margin: 0 0 8px;
+}
+
+.modalSubtitle {
+  color: #888;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.modalFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+/* Pantry list tabs (inside picker modal) */
+.pantryTabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #1e1e3a;
+}
+
+.pantryTab {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 1px solid #2a2a4a;
+  background: #0f0f1a;
+  color: #888;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.pantryTab:hover { border-color: #3a3a6a; color: #aaa; }
+
+.pantryTabActive {
+  background: #6c6cff22;
+  border-color: #6c6cff;
+  color: #6c6cff;
+}
+
+/* Removable "x" on a chip (extra ingredients in picker) */
+.chipRemove {
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 0 0 6px;
+  margin-left: 2px;
+}

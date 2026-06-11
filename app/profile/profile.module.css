@@ -1,0 +1,355 @@
+.page {
+  flex: 1;
+  width: 100%;
+  min-height: calc(100vh - 49px);
+  background: #0f0f1a;
+  padding: 32px 16px 64px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+.container {
+  width: 100%;
+  max-width: 520px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #aaa;
+  text-decoration: none;
+  background: #16162a;
+  border: 1px solid #2a2a4a;
+  border-radius: 10px;
+  padding: 10px 16px;
+  transition: border-color 0.15s, color 0.15s;
+  align-self: flex-start;
+}
+.backBtn:hover {
+  border-color: #667eea;
+  color: #fff;
+}
+
+.card {
+  background: #16162a;
+  border: 1px solid #2a2a4a;
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.sectionLabel {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #8888bb;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+}
+
+.infoRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.avatarLarge {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #1a1a2e;
+  border: 2px solid #2a2a4a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  flex-shrink: 0;
+}
+
+.infoDetails { flex: 1; }
+
+.displayName {
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 2px;
+}
+
+.infoEmail {
+  font-size: 13px;
+  color: #888;
+  margin-bottom: 2px;
+}
+
+.infoBadge {
+  display: inline-block;
+  font-size: 11px;
+  color: #667eea;
+  background: rgba(102,126,234,0.12);
+  border: 1px solid rgba(102,126,234,0.25);
+  border-radius: 20px;
+  padding: 2px 8px;
+  margin-top: 4px;
+}
+
+.infoMeta {
+  font-size: 12px;
+  color: #555;
+  margin-top: 12px;
+}
+
+.fieldGroup { margin-bottom: 16px; }
+
+.label {
+  display: block;
+  font-size: 13px;
+  color: #aaa;
+  margin-bottom: 6px;
+}
+
+.input {
+  width: 100%;
+  background: #0f0f1a;
+  border: 1px solid #2a2a4a;
+  border-radius: 8px;
+  padding: 10px 14px;
+  color: #fff;
+  font-size: 14px;
+  outline: none;
+  box-sizing: border-box;
+  transition: border-color 0.15s;
+}
+.input:focus { border-color: #667eea; }
+
+.btn {
+  padding: 10px 20px;
+  background: #667eea;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.btn:hover:not(:disabled) { opacity: 0.88; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.msgSuccess {
+  font-size: 12px;
+  color: #4ecdc4;
+  margin-top: 8px;
+}
+.msgError {
+  font-size: 12px;
+  color: #ff6b6b;
+  margin-top: 8px;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid #2a2a4a;
+  margin: 20px 0;
+}
+
+.historyItem {
+  padding: 12px 0;
+  border-bottom: 1px solid #1e1e36;
+  cursor: pointer;
+}
+.historyItem:last-child { border-bottom: none; }
+
+.historyTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.historyMeal {
+  font-size: 14px;
+  color: #eee;
+  font-weight: 500;
+}
+
+.historyDate {
+  font-size: 12px;
+  color: #555;
+  flex-shrink: 0;
+  margin-left: 12px;
+}
+
+.historyRecipe {
+  margin-top: 10px;
+  padding: 12px;
+  background: #0f0f1a;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #ccc;
+  line-height: 1.6;
+}
+
+.emptyState {
+  text-align: center;
+  color: #555;
+  font-size: 14px;
+  padding: 16px 0;
+}
+
+.countBadge {
+  display: inline-block;
+  background: #2a2a4a;
+  color: #888;
+  font-size: 11px;
+  border-radius: 20px;
+  padding: 2px 8px;
+  margin-left: 8px;
+  font-weight: 600;
+  vertical-align: middle;
+}
+
+/* Pantry lists */
+.pantryHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.btnSmall {
+  padding: 6px 14px;
+  background: #667eea;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.15s;
+  white-space: nowrap;
+}
+.btnSmall:hover:not(:disabled) { opacity: 0.88; }
+.btnSmall:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btnGhost {
+  padding: 6px 14px;
+  background: transparent;
+  color: #888;
+  border: 1px solid #2a2a4a;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+.btnGhost:hover { border-color: #667eea; color: #eee; }
+
+.pantryNewListForm {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.pantryNewListForm .input { flex: 1; }
+
+.pantryListCard {
+  background: #0f0f1a;
+  border: 1px solid #2a2a4a;
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 12px;
+}
+.pantryListCard:last-child { margin-bottom: 0; }
+
+.pantryListHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.pantryListName {
+  font-size: 14px;
+  font-weight: 600;
+  color: #eee;
+}
+
+.pantryListActions {
+  display: flex;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.iconBtn {
+  background: none;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition: background 0.15s;
+  line-height: 1;
+}
+.iconBtn:hover { background: #1e1e36; }
+
+.pantryChips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.pantryChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 20px;
+  border: 1px solid #2a2a4a;
+  background: #16162a;
+  color: #ccc;
+  font-size: 0.8rem;
+}
+
+.pantryChipsEmpty {
+  color: #555;
+  font-size: 13px;
+}
+
+.chipRemove {
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 0.95rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+}
+.chipRemove:hover { color: #ff6b6b; }
+
+.pantryAddRow {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+.pantryAddRow .input { flex: 1; }
+
+.pantryAddHint {
+  color: #555;
+  font-size: 12px;
+  margin: 4px 0 0;
+}
+
+.pantryMaxNote {
+  text-align: center;
+  color: #555;
+  font-size: 13px;
+  margin-top: 4px;
+}

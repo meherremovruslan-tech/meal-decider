@@ -8,7 +8,7 @@ export async function GET() {
 
   const { data, error } = await supabase
     .from('recipe_history')
-    .select('id, meal_name, ingredients, dietary_filters, cuisine, created_at')
+    .select('id, meal_name, ingredients, dietary_filters, cuisine, recipe, created_at')
     .eq('user_id', session.user.id)
     .order('created_at', { ascending: false })
     .limit(50);

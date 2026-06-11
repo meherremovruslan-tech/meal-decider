@@ -24,7 +24,7 @@ export async function POST(req) {
   if (typeof name !== 'string' || !name.trim()) {
     return Response.json({ error: 'name is required' }, { status: 400 });
   }
-  const trimmed = name.trim().slice(0, 30);
+  const trimmed = name.trim().slice(0, 200);
 
   const { count, error: countError } = await supabase
     .from('pantry_lists')

@@ -4,6 +4,7 @@ import { authOptions } from '@/lib/auth';
 import { supabase } from '@/lib/supabase';
 
 const client = new Anthropic();
+const ALLOWED_CUISINES = ['Asian', 'Italian', 'Turkish', 'Mexican', 'Mediterranean'];
 
 export async function POST(req) {
   try {
@@ -12,15 +13,16 @@ export async function POST(req) {
       return Response.json({ error: 'No meal provided' }, { status: 400 });
     }
 
-    const ALLOWED_CUISINES = ['Asian', 'Italian', 'Turkish', 'Mexican', 'Mediterranean'];
-    const safeCuisine = ALLOWED_CUISINES.includes(cuisine) ? cuisine : null;
+    const safeCuisines = Array.isArray(cuisine)
+      ? cuisine.filter(c => ALLOWED_CUISINES.includes(c))
+      : [];
 
     const filterText = filters?.length
       ? `\nDietary requirements (ALL meals MUST comply): ${filters.join(', ')}.`
       : '';
 
-    const cuisineText = safeCuisine
-      ? `\nCuisine style: ${safeCuisine}.`
+    const cuisineText = safeCuisines.length
+      ? `\nCuisine style: ${safeCuisines.join(', ')}.`
       : '';
 
     const message = await client.messages.create({
@@ -48,17 +50,16 @@ Keep it practical and under 400 words.`,
     const recipe = message.content[0].text;
 
     const session = await getServerSession(authOptions);
-    if (session) {
-      supabase.from('recipe_history').insert({
+    if (session?.user?.id) {
+      const { error: historyError } = await supabase.from('recipe_history').insert({
         user_id: session.user.id,
         meal_name: meal,
         recipe,
         ingredients: ingredients || '',
         dietary_filters: filters || [],
-        cuisine: safeCuisine || null,
-      }).then(({ error }) => {
-        if (error) console.error('History save failed:', error.message);
+        cuisine: safeCuisines.length ? safeCuisines.join(',') : null,
       });
+      if (historyError) console.error('History save failed:', historyError.code, historyError.message);
     }
 
     return Response.json({ recipe });

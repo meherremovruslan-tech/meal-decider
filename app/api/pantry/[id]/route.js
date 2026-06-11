@@ -32,14 +32,14 @@ export async function PATCH(req, { params }) {
     if (typeof name !== 'string' || !name.trim()) {
       return Response.json({ error: 'name must be a non-empty string' }, { status: 400 });
     }
-    update.name = name.trim().slice(0, 30);
+    update.name = name.trim().slice(0, 200);
   }
 
   if (ingredients !== undefined) {
     if (!Array.isArray(ingredients) || !ingredients.every(i => typeof i === 'string')) {
       return Response.json({ error: 'ingredients must be an array of strings' }, { status: 400 });
     }
-    const cleaned = ingredients.map(i => i.trim().slice(0, 40)).filter(Boolean);
+    const cleaned = ingredients.map(i => i.trim().slice(0, 200)).filter(Boolean);
     update.ingredients = dedupeIngredients(cleaned);
   }
 
