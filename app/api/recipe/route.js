@@ -1,14 +1,29 @@
+import { NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { supabase } from '@/lib/supabase';
+import { getGuestSessionId, attachGuestSessionCookie } from '@/lib/guestSession';
+import { consumeGuestQuota } from '@/lib/guestQuota';
 
 const client = new Anthropic();
 const ALLOWED_CUISINES = ['Asian', 'Italian', 'Turkish', 'Mexican', 'Mediterranean'];
 
 export async function POST(req) {
+  let session, guestSessionId, guestIsNew;
   try {
-    const { meal, ingredients, filters, cuisine } = await req.json();
+    session = await getServerSession(authOptions);
+    if (!session) {
+      ({ sessionId: guestSessionId, isNew: guestIsNew } = await getGuestSessionId());
+      const { allowed } = await consumeGuestQuota(guestSessionId, 'recipe');
+      if (!allowed) {
+        const res = NextResponse.json({ error: 'Daily free limit reached. Sign up for unlimited recipes.' }, { status: 429 });
+        if (guestIsNew) attachGuestSessionCookie(res, guestSessionId);
+        return res;
+      }
+    }
+
+    const { meal, ingredients, cuisine } = await req.json();
     if (!meal) {
       return Response.json({ error: 'No meal provided' }, { status: 400 });
     }
@@ -16,10 +31,6 @@ export async function POST(req) {
     const safeCuisines = Array.isArray(cuisine)
       ? cuisine.filter(c => ALLOWED_CUISINES.includes(c))
       : [];
-
-    const filterText = filters?.length
-      ? `\nDietary requirements (ALL meals MUST comply): ${filters.join(', ')}.`
-      : '';
 
     const cuisineText = safeCuisines.length
       ? `\nCuisine style: ${safeCuisines.join(', ')}.`
@@ -30,7 +41,7 @@ export async function POST(req) {
       max_tokens: 1200,
       messages: [{
         role: 'user',
-        content: `Write a concise recipe for: ${meal}${filterText}${cuisineText}
+        content: `Write a concise recipe for: ${meal}${cuisineText}
 Available ingredients the user has: ${ingredients}
 
 Format the recipe with these sections:
@@ -49,22 +60,25 @@ Keep it practical and under 400 words.`,
 
     const recipe = message.content[0].text;
 
-    const session = await getServerSession(authOptions);
     if (session?.user?.id) {
       const { error: historyError } = await supabase.from('recipe_history').insert({
         user_id: session.user.id,
         meal_name: meal,
         recipe,
         ingredients: ingredients || '',
-        dietary_filters: filters || [],
+        dietary_filters: [],
         cuisine: safeCuisines.length ? safeCuisines.join(',') : null,
       });
       if (historyError) console.error('History save failed:', historyError.code, historyError.message);
     }
 
-    return Response.json({ recipe });
+    const res = NextResponse.json({ recipe });
+    if (!session && guestIsNew) attachGuestSessionCookie(res, guestSessionId);
+    return res;
   } catch (e) {
     console.error(e);
-    return Response.json({ error: e.message }, { status: 500 });
+    const res = NextResponse.json({ error: e.message }, { status: 500 });
+    if (!session && guestIsNew) attachGuestSessionCookie(res, guestSessionId);
+    return res;
   }
 }
