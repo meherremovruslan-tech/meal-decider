@@ -11,7 +11,7 @@ export default function SpinOverlay({
   open, onClose,
   canvasRef, canvasSize,
   meals, loadingSuggest, spinning, spinGate,
-  selectedMeal, intro, recipe, loadingRecipe, error,
+  selectedMeal, intro, recipe, videoId, videoTitle, loadingRecipe, error,
   onSpin, onGetRecipe,
 }) {
   if (!open) return null;
@@ -67,7 +67,7 @@ export default function SpinOverlay({
         <div className={styles.recipeView}>
           <div className={styles.recipeHead}>
             <span className={styles.resultSub}>YOUR RECIPE</span>
-            <RecipeActions meal={selectedMeal} recipe={recipe} />
+            <RecipeActions meal={selectedMeal} recipe={recipe} videoId={videoId} videoTitle={videoTitle} />
           </div>
           <div className={styles.recipeText}>{renderRecipe(recipe)}</div>
           <button type="button" className={styles.doneBtn} onClick={onClose}>Done ✓</button>

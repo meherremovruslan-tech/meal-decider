@@ -43,6 +43,7 @@ const mapServerHistory = (rows) => rows.map(h => ({
   recipe: h.recipe,
   dietary_filters: h.dietary_filters,
   cuisine: h.cuisine,
+  videoId: h.video_id,
   created_at: h.created_at,
 }));
 
@@ -54,6 +55,7 @@ export default function MealDecider() {
   const [meals, setMeals] = useState([]);
   const [selectedMeal, setSelectedMeal] = useState(null);
   const [recipe, setRecipe] = useState('');
+  const [recipeVideo, setRecipeVideo] = useState(null); // { videoId, videoTitle } | null
   const [loadingSuggest, setLoadingSuggest] = useState(false);
   const [loadingRecipe, setLoadingRecipe] = useState(false);
   const [spinning, setSpinning] = useState(false);
@@ -124,7 +126,7 @@ export default function MealDecider() {
   // Reset meals when meal time or cuisine change
   useEffect(() => {
     setMeals(prev => {
-      if (prev.length > 0) { setSelectedMeal(null); setRecipe(''); }
+      if (prev.length > 0) { setSelectedMeal(null); setRecipe(''); setRecipeVideo(null); }
       return [];
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -210,6 +212,7 @@ export default function MealDecider() {
     setMeals([]);
     setSelectedMeal(null);
     setRecipe('');
+    setRecipeVideo(null);
     setError('');
     try {
       const res = await fetch('/api/suggest', {
@@ -238,6 +241,7 @@ export default function MealDecider() {
     // not on the previous recipe (which lives in History anyway).
     if (recipe) {
       setRecipe('');
+      setRecipeVideo(null);
       setSelectedMeal(null);
     }
     setSpinOverlayOpen(true);
@@ -273,6 +277,7 @@ export default function MealDecider() {
     setSpinning(true);
     setSelectedMeal(null);
     setRecipe('');
+    setRecipeVideo(null);
     track('spin', { signed_in: isSignedIn, meal_time: mealTime || 'none', meal_time_auto: mealTimeAuto });
     velocityRef.current = Math.random() * 0.15 + 0.22;
 
@@ -295,6 +300,7 @@ export default function MealDecider() {
     if (!selectedMeal) return;
     setLoadingRecipe(true);
     setRecipe('');
+    setRecipeVideo(null);
     setError('');
     try {
       const res = await fetch('/api/recipe', {
@@ -309,6 +315,7 @@ export default function MealDecider() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to get recipe');
       setRecipe(data.recipe);
+      setRecipeVideo(data.videoId ? { videoId: data.videoId, videoTitle: data.videoTitle } : null);
       track('recipe_opened', { meal: selectedMeal, signed_in: isSignedIn });
 
       if (!isSignedIn) {
@@ -365,6 +372,7 @@ export default function MealDecider() {
           ingredients: item.ingredients || '',
           dietary_filters: item.dietary_filters || [],
           cuisine: item.cuisine || null,
+          video_id: item.videoId || null,
           created_at: item.created_at,
         }),
       })
@@ -684,7 +692,7 @@ export default function MealDecider() {
         <div className={styles.card}>
           <div className={styles.recipeHeader}>
             <span className={styles.label}>Your Recipe</span>
-            <RecipeActions meal={selectedMeal} recipe={recipe} />
+            <RecipeActions meal={selectedMeal} recipe={recipe} videoId={recipeVideo?.videoId} videoTitle={recipeVideo?.videoTitle} />
           </div>
           <div className={styles.recipe}>{renderRecipe(recipe)}</div>
         </div>
@@ -723,7 +731,7 @@ export default function MealDecider() {
                 <div className={styles.historyRecipe}>
                   {renderRecipe(h.recipe)}
                   <div style={{ marginTop: 12 }}>
-                    <RecipeActions meal={h.meal} recipe={h.recipe} />
+                    <RecipeActions meal={h.meal} recipe={h.recipe} videoId={h.videoId} />
                   </div>
                 </div>
               )}
@@ -785,6 +793,8 @@ export default function MealDecider() {
         selectedMeal={selectedMeal}
         intro={mealIntro(mealTime)}
         recipe={recipe}
+        videoId={recipeVideo?.videoId}
+        videoTitle={recipeVideo?.videoTitle}
         loadingRecipe={loadingRecipe}
         error={error}
         onSpin={spin}
