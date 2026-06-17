@@ -5,6 +5,7 @@ import { authOptions } from '@/lib/auth';
 import { supabase } from '@/lib/supabase';
 import { getGuestSessionId, attachGuestSessionCookie } from '@/lib/guestSession';
 import { consumeGuestQuota } from '@/lib/guestQuota';
+import { searchRecipeVideo } from '@/lib/youtube';
 
 const client = new Anthropic();
 const ALLOWED_CUISINES = ['Asian', 'Italian', 'Turkish', 'Mexican', 'Mediterranean'];
@@ -60,6 +61,16 @@ Keep it practical and under 400 words.`,
 
     const recipe = message.content[0].text;
 
+    let videoId = null;
+    let videoTitle = null;
+    if (session?.user?.id) {
+      const video = await searchRecipeVideo(meal);
+      if (video) {
+        videoId = video.videoId;
+        videoTitle = video.videoTitle;
+      }
+    }
+
     if (session?.user?.id) {
       const { error: historyError } = await supabase.from('recipe_history').insert({
         user_id: session.user.id,
@@ -68,11 +79,12 @@ Keep it practical and under 400 words.`,
         ingredients: ingredients || '',
         dietary_filters: [],
         cuisine: safeCuisines.length ? safeCuisines.join(',') : null,
+        video_id: videoId,
       });
       if (historyError) console.error('History save failed:', historyError.code, historyError.message);
     }
 
-    const res = NextResponse.json({ recipe });
+    const res = NextResponse.json({ recipe, videoId, videoTitle });
     if (!session && guestIsNew) attachGuestSessionCookie(res, guestSessionId);
     return res;
   } catch (e) {
