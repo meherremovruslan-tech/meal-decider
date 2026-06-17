@@ -41,3 +41,16 @@
   background: linear-gradient(135deg, #6c6cff, #a855f7);
   color: #fff;
 }
+
+.watch {
+  background: linear-gradient(135deg, #ff4d4d, #cc0000);
+  border: none;
+  color: #fff;
+  font-weight: 700;
+}
+
+.watch:hover:not(:disabled) {
+  opacity: 0.88;
+  background: linear-gradient(135deg, #ff4d4d, #cc0000);
+  color: #fff;
+}

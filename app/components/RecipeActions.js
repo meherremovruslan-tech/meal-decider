@@ -4,15 +4,23 @@ import { renderRecipe, stripTitle } from '@/lib/renderRecipe';
 import styles from './RecipeActions.module.css';
 import { APP_NAME } from '@/lib/brand';
 import { track } from '@/lib/analytics';
+import VideoModal from './VideoModal';
 
 // Share / Copy / Save-as-PDF buttons for a recipe. Used by the main recipe
 // card and by expanded history items on both the home and profile pages.
-export default function RecipeActions({ meal, recipe }) {
+export default function RecipeActions({ meal, recipe, videoId, videoTitle }) {
   const [shareLabel, setShareLabel] = useState('🔗 Share');
   const [copyLabel, setCopyLabel] = useState('📋 Copy');
   const [saveLabel, setSaveLabel] = useState('⬇️ Save');
   const [saving, setSaving] = useState(false);
   const pdfRef = useRef(null);
+  const [showVideo, setShowVideo] = useState(false);
+
+  const watchVideo = (e) => {
+    e.stopPropagation();
+    setShowVideo(true);
+    track('video_watched', { meal });
+  };
 
   const share = async (e) => {
     e.stopPropagation();
@@ -125,7 +133,15 @@ export default function RecipeActions({ meal, recipe }) {
         <button type="button" className={styles.btn} onClick={save} disabled={saving}>
           {saveLabel}
         </button>
+        {videoId && (
+          <button type="button" className={`${styles.btn} ${styles.watch}`} onClick={watchVideo}>
+            ▶ Watch Video
+          </button>
+        )}
       </div>
+      {showVideo && (
+        <VideoModal videoId={videoId} title={videoTitle} onClose={() => setShowVideo(false)} />
+      )}
       {/* Off-screen copy of the recipe card captured for the PDF download */}
       <div
         ref={pdfRef}
