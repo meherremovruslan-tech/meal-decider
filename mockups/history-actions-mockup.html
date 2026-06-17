@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup — Share/Copy/Save in Meal History</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0f0f1a; color: #ccc;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    padding: 32px 16px 80px;
+    display: flex; flex-direction: column; align-items: center; gap: 20px;
+  }
+  h1 { font-size: 1.3rem; color: #eee; text-align: center; }
+  .note { max-width: 560px; text-align: center; color: #8888bb; font-size: 0.9rem; line-height: 1.6; }
+  .card {
+    width: 420px; max-width: 95vw;
+    background: #16162a; border: 1px solid #2a2a4a; border-radius: 16px; padding: 20px;
+  }
+  .label {
+    display: block; font-size: 0.8rem; font-weight: 600; color: #8888bb;
+    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;
+  }
+  .item { padding: 10px 0; border-bottom: 1px solid #1e1e3a; font-size: 0.9rem; }
+  .item:last-child { border-bottom: none; }
+  .rowTop { display: flex; align-items: center; cursor: pointer; }
+  .meal { color: #ddd; flex: 1; }
+  .date { color: #666; font-size: 0.78rem; flex-shrink: 0; margin-left: 12px; }
+  .del {
+    flex-shrink: 0; width: 26px; height: 26px; margin-left: 8px;
+    border-radius: 50%; border: none; background: transparent; color: #555;
+    font-size: 0.9rem; cursor: pointer;
+  }
+  .del:hover { background: #ff6b6b22; color: #ff6b6b; }
+  .recipeBox {
+    margin-top: 10px; padding: 12px; background: #0f0f1a; border-radius: 8px;
+    font-size: 0.85rem; line-height: 1.7; color: #bbb;
+  }
+  .recipeBox h4 { color: #f7c948; font-size: 0.85rem; margin: 8px 0 2px; }
+  .actions { display: flex; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+  .abtn {
+    border: none; border-radius: 8px; padding: 7px 14px;
+    font-size: 0.8rem; font-weight: 600; cursor: pointer; font-family: inherit;
+  }
+  .share { background: linear-gradient(135deg, #6c6cff, #a855f7); color: #fff; }
+  .share:hover { opacity: 0.88; }
+  .grey { background: #1e1e3a; border: 1px solid #2a2a4a; color: #aaa; }
+  .grey:hover { background: #252545; color: #eee; }
+  .hint { color: #555; font-size: 0.78rem; margin-top: 6px; }
+</style>
+</head>
+<body>
+
+<h1>Share / Copy / Save in meal history — Mockup</h1>
+<p class="note">
+  <b>Tap a meal</b> to expand its recipe — the three buttons appear under it.
+  They work the same as on the main recipe card. The ✕ delete stays where it is.
+  Meals without a saved recipe (greyed example below) get no buttons — there's nothing to share.
+</p>
+
+<div class="card">
+  <span class="label">Recent Meals</span>
+  <div id="list"></div>
+</div>
+
+<script>
+const DATA = [
+  { meal: 'Mutton and Vegetable Stew', date: '6/11/2026', recipe: true },
+  { meal: 'Creamy Garlic Pasta', date: '6/10/2026', recipe: true },
+  { meal: 'Veggie Fried Rice (no recipe saved)', date: '6/8/2026', recipe: false },
+];
+let expanded = 0;
+
+function render() {
+  document.getElementById('list').innerHTML = DATA.map((d, i) => `
+    <div class="item">
+      <div class="rowTop" onclick="toggle(${i})">
+        <span class="meal" style="${d.recipe ? '' : 'color:#777'}">${d.meal}</span>
+        <span class="date">${d.date}</span>
+        <button class="del" onclick="event.stopPropagation()">✕</button>
+      </div>
+      ${expanded === i && d.recipe ? `
+        <div class="recipeBox">
+          <h4>Ingredients</h4>
+          • 500g mutton<br>• 2 tomatoes<br>• 1 onion
+          <h4>Steps</h4>
+          1. Brown the mutton...<br>2. Sauté aromatics...
+          <div class="actions" onclick="event.stopPropagation()">
+            <button class="abtn share" id="share${i}" onclick="flash('share${i}','✓ Copied!','🔗 Share')">🔗 Share</button>
+            <button class="abtn grey" id="copy${i}" onclick="flash('copy${i}','✓ Copied!','📋 Copy')">📋 Copy</button>
+            <button class="abtn grey" id="save${i}" onclick="fakeSave('save${i}')">⬇️ Save</button>
+          </div>
+          <div class="hint">Share copies a link · Copy copies the text · Save downloads the PDF</div>
+        </div>` : ''}
+      ${expanded === i && !d.recipe ? `
+        <div class="recipeBox" style="color:#555">No recipe saved for this meal.</div>` : ''}
+    </div>`).join('');
+}
+function toggle(i) { expanded = expanded === i ? -1 : i; render(); }
+function flash(id, tmp, back) {
+  const b = document.getElementById(id); b.textContent = tmp;
+  setTimeout(() => { const el = document.getElementById(id); if (el) el.textContent = back; }, 1600);
+}
+function fakeSave(id) {
+  const b = document.getElementById(id); b.textContent = '...';
+  setTimeout(() => { const el = document.getElementById(id); if (el) el.textContent = '✓ Saved';
+    setTimeout(() => { const e2 = document.getElementById(id); if (e2) e2.textContent = '⬇️ Save'; }, 1400);
+  }, 1200);
+}
+render();
+</script>
+</body>
+</html>

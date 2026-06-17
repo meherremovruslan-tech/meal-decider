@@ -10,9 +10,13 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.56.0",
     "@supabase/supabase-js": "^2.108.0",
+    "@vercel/analytics": "^2.0.1",
     "bcryptjs": "^3.0.3",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^4.2.1",
     "next": "^15.3.3",
     "next-auth": "^4.24.14",
+    "posthog-js": "^1.386.6",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "resend": "^6.12.4"

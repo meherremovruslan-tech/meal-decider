@@ -4,6 +4,7 @@ import { signIn } from 'next-auth/react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import styles from '../auth.module.css';
+import { APP_NAME } from '@/lib/brand';
 
 function LoginForm() {
   const router = useRouter();
@@ -73,7 +74,7 @@ function LoginForm() {
   return (
     <div className={styles.page}>
       <div className={styles.card}>
-        <div className={styles.logo}>🎰 Meal Decider</div>
+        <div className={styles.logo}>🎰 {APP_NAME}</div>
 
         {banner && (
           <div className={`${styles.banner} ${bannerType === 'success' ? styles.bannerSuccess : styles.bannerError}`}>

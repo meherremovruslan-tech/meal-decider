@@ -1,0 +1,143 @@
+.wrap { padding-bottom: 16px; }
+
+.head { padding: 18px 20px 8px; }
+.logo { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.5px; }
+
+.error { color: #ff6b6b; font-size: 0.85rem; text-align: center; margin: 0 16px 10px; }
+.empty { text-align: center; color: #555; font-size: 0.9rem; padding: 40px 30px; }
+
+.card {
+  background: #16162a;
+  border: 1px solid #2a2a4a;
+  border-radius: 16px;
+  padding: 16px;
+  margin: 0 16px 14px;
+}
+
+.cardHead { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+
+.name {
+  flex: 1;
+  background: none;
+  border: none;
+  color: #fff;
+  font-weight: 700;
+  font-size: 1rem;
+  text-align: left;
+  cursor: pointer;
+  padding: 0;
+  font-family: inherit;
+}
+
+.nameInput {
+  flex: 1;
+  background: #0f0f1a;
+  border: 1px solid #6c6cff;
+  border-radius: 8px;
+  padding: 6px 10px;
+  color: #eee;
+  font-size: 0.95rem;
+  font-weight: 700;
+  outline: none;
+  font-family: inherit;
+}
+
+.count { color: #666; font-size: 0.75rem; flex-shrink: 0; }
+
+.deleteList {
+  flex-shrink: 0;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  border: 1px solid #ff6b6b33;
+  background: #1e1e3a;
+  color: #ff8888;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.chips { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.emptyList { color: #555; font-size: 0.85rem; }
+
+.ingChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #6c6cff22;
+  border: 1px solid #6c6cff55;
+  color: #aaaaff;
+  border-radius: 20px;
+  padding: 8px 14px;
+  font-size: 0.85rem;
+}
+.ingChip button {
+  background: none;
+  border: none;
+  color: #7777cc;
+  cursor: pointer;
+  padding: 0;
+  font-size: 0.85rem;
+}
+.ingChip button:disabled { opacity: 0.4; }
+
+.addInput {
+  width: 100%;
+  background: #0f0f1a;
+  border: 1px solid #2a2a4a;
+  border-radius: 12px;
+  padding: 11px 14px;
+  color: #eee;
+  font-size: 0.9rem;
+  outline: none;
+  margin-bottom: 12px;
+}
+.addInput:focus { border-color: #6c6cff; }
+.addInput::placeholder { color: #555; }
+
+/* same hint as the web pantry (profile page) */
+.addHint {
+  color: #555;
+  font-size: 0.75rem;
+  margin: -8px 0 12px;
+}
+
+.newHint {
+  color: #555;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  margin: 6px 18px 0;
+}
+
+.useBtn {
+  width: 100%;
+  border: none;
+  border-radius: 12px;
+  padding: 13px;
+  background: #6c6cff;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+.useBtn:active { transform: scale(0.98); }
+.useBtn:disabled { opacity: 0.4; }
+
+.newRow { display: flex; gap: 8px; margin: 0 16px; }
+.newRow .addInput { margin-bottom: 0; flex: 1; }
+
+.newBtn {
+  flex-shrink: 0;
+  border: 2px dashed #2a2a4a;
+  background: transparent;
+  border-radius: 12px;
+  color: #777;
+  font-size: 0.85rem;
+  font-weight: 600;
+  padding: 0 16px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.newBtn:disabled { opacity: 0.5; }
+
+.limit { text-align: center; color: #555; font-size: 0.75rem; padding: 10px 0; }

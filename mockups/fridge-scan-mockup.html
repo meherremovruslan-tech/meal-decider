@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup — Fridge Photo Scan</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0f0f1a;
+    color: #ccc;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    padding: 32px 16px 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+  }
+  h1 { font-size: 1.3rem; color: #eee; text-align: center; }
+  .note { max-width: 640px; text-align: center; color: #8888bb; font-size: 0.9rem; line-height: 1.6; }
+  .phone { width: 420px; max-width: 95vw; display: flex; flex-direction: column; gap: 16px; }
+  .card {
+    width: 100%;
+    background: #16162a;
+    border: 1px solid #2a2a4a;
+    border-radius: 16px;
+    padding: 20px;
+  }
+  .label {
+    display: block; font-size: 0.8rem; font-weight: 600; color: #8888bb;
+    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;
+  }
+  .inputRow { display: flex; gap: 8px; flex-wrap: wrap; }
+  .input {
+    flex: 1; min-width: 160px;
+    background: #0f0f1a; border: 1px solid #2a2a4a; border-radius: 10px;
+    color: #eee; padding: 10px 12px; font-size: 0.95rem; font-family: inherit;
+  }
+  .btn {
+    border: none; border-radius: 10px; padding: 10px 16px;
+    font-size: 0.9rem; font-weight: 600; cursor: pointer; font-family: inherit;
+  }
+  .btnPrimary { background: #6c6cff; color: #fff; }
+  .btnPrimary:hover { background: #7d7dff; }
+  .btnScan {
+    background: linear-gradient(135deg, #2ecc71, #1abc9c);
+    color: #06281a;
+  }
+  .btnScan:hover { opacity: 0.9; }
+  .btnPantry { background: #1e1e3a; border: 1px solid #2a2a4a; color: #aaa; }
+
+  /* Modal */
+  .overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+    display: none; align-items: center; justify-content: center; padding: 16px;
+  }
+  .overlay.show { display: flex; }
+  .modal {
+    background: #16162a; border: 1px solid #2a2a4a; border-radius: 16px;
+    width: 420px; max-width: 95vw; padding: 20px;
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .modalHeader { display: flex; justify-content: space-between; align-items: center; color: #eee; font-weight: 600; }
+  .modalClose { background: none; border: none; color: #888; font-size: 1.3rem; cursor: pointer; }
+
+  /* Scanning state */
+  .scanState { text-align: center; padding: 24px 0; }
+  .photoThumb {
+    width: 120px; height: 90px; border-radius: 10px; margin: 0 auto 14px;
+    background: linear-gradient(135deg, #1e1e3a, #2a2a4a);
+    display: flex; align-items: center; justify-content: center; font-size: 2rem;
+    position: relative; overflow: hidden;
+  }
+  .scanBeam {
+    position: absolute; left: 0; width: 100%; height: 3px;
+    background: linear-gradient(90deg, transparent, #2ecc71, transparent);
+    animation: beam 1.4s ease-in-out infinite;
+  }
+  @keyframes beam { 0%,100% { top: 8%; } 50% { top: 88%; } }
+  .scanText { color: #8888bb; font-size: 0.9rem; }
+  .dots::after { content: ''; animation: dots 1.5s steps(4) infinite; }
+  @keyframes dots { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75% { content: '...'; } }
+
+  /* Review chips */
+  .chipRow { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    border: 1px solid #2ecc7166; background: #2ecc7118; color: #7fe0ab;
+    border-radius: 999px; padding: 7px 14px; font-size: 0.88rem; cursor: pointer;
+    font-family: inherit; transition: all 0.15s;
+  }
+  .chip.off {
+    border-color: #2a2a4a; background: transparent; color: #555;
+    text-decoration: line-through;
+  }
+  .chipHint { color: #666; font-size: 0.78rem; }
+  .addRow { display: flex; gap: 8px; }
+  .addRow .input { font-size: 0.88rem; padding: 8px 12px; }
+  .btnAdd { background: #1e1e3a; border: 1px solid #2a2a4a; color: #aaa; }
+  .btnConfirm { width: 100%; background: #2ecc71; color: #06281a; padding: 12px; font-size: 0.95rem; }
+  .btnConfirm:hover { background: #3dd880; }
+  .btnRescan { background: none; border: none; color: #6c8cff; font-size: 0.85rem; cursor: pointer; font-family: inherit; }
+  .btnRescan:hover { text-decoration: underline; }
+
+  .resetBtn {
+    background: #1e1e3a; border: 1px solid #2a2a4a; color: #aaa;
+    border-radius: 10px; padding: 8px 16px; font-size: 0.85rem; cursor: pointer;
+    font-family: inherit;
+  }
+</style>
+</head>
+<body>
+
+<h1>📸 Fridge Photo Scan — Mockup</h1>
+<p class="note">
+  This demo shows the whole flow. <b>Click "📸 Scan Fridge"</b> — it pretends to take a photo,
+  shows the AI analyzing it (~3 seconds, like the real thing), then opens the review popup.
+  In the popup, tap chips to untick wrong items, add missing ones, then confirm.
+</p>
+
+<div class="phone">
+  <div class="card">
+    <span class="label">Step 1 — What's in your fridge?</span>
+    <div class="inputRow">
+      <input class="input" id="ingredients" placeholder="e.g. chicken, rice, tomatoes, garlic...">
+    </div>
+    <div class="inputRow" style="margin-top: 10px;">
+      <button class="btn btnPrimary">Suggest</button>
+      <button class="btn btnScan" onclick="startScan()">📸 Scan Fridge</button>
+      <button class="btn btnPantry">🧊 Load from Pantry</button>
+    </div>
+  </div>
+  <button class="resetBtn" onclick="resetDemo()">↺ Reset demo</button>
+</div>
+
+<!-- Scan/review modal -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div class="modalHeader">
+      <span id="modalTitle">📸 Scanning your fridge</span>
+      <button class="modalClose" onclick="closeModal()">×</button>
+    </div>
+
+    <!-- analyzing state -->
+    <div class="scanState" id="scanState">
+      <div class="photoThumb">🧊<div class="scanBeam"></div></div>
+      <div class="scanText">AI is reading your photo<span class="dots"></span></div>
+    </div>
+
+    <!-- review state -->
+    <div id="reviewState" style="display:none; flex-direction: column; gap: 12px;">
+      <span class="chipHint">Tap anything that's wrong to remove it:</span>
+      <div class="chipRow" id="chips"></div>
+      <div class="addRow">
+        <input class="input" id="extraInput" placeholder="Add something we missed...">
+        <button class="btn btnAdd" onclick="addExtra()">+</button>
+      </div>
+      <button class="btn btnConfirm" onclick="confirmScan()" id="confirmBtn">Use 6 ingredients</button>
+      <div style="text-align:center;">
+        <button class="btnRescan" onclick="startScan()">📸 Scan another photo</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const FOUND = ['chicken breast', 'tomatoes', 'milk', 'cheddar cheese', 'eggs', 'spring onions'];
+let items = [];
+
+function startScan() {
+  document.getElementById('overlay').classList.add('show');
+  document.getElementById('modalTitle').textContent = '📸 Scanning your fridge';
+  document.getElementById('scanState').style.display = 'block';
+  document.getElementById('reviewState').style.display = 'none';
+  setTimeout(() => {
+    items = FOUND.map(name => ({ name, on: true }));
+    document.getElementById('modalTitle').textContent = '📸 Here\'s what we found';
+    document.getElementById('scanState').style.display = 'none';
+    document.getElementById('reviewState').style.display = 'flex';
+    renderChips();
+  }, 2800);
+}
+
+function renderChips() {
+  document.getElementById('chips').innerHTML = items.map((it, i) =>
+    `<button class="chip ${it.on ? '' : 'off'}" onclick="toggleChip(${i})">${it.on ? '✓ ' : ''}${it.name}</button>`
+  ).join('');
+  const count = items.filter(it => it.on).length;
+  const btn = document.getElementById('confirmBtn');
+  btn.textContent = count > 0 ? `Use ${count} ingredient${count === 1 ? '' : 's'}` : 'Nothing selected';
+  btn.disabled = count === 0;
+}
+
+function toggleChip(i) { items[i].on = !items[i].on; renderChips(); }
+
+function addExtra() {
+  const input = document.getElementById('extraInput');
+  const val = input.value.trim();
+  if (!val) return;
+  if (!items.some(it => it.name.toLowerCase() === val.toLowerCase())) {
+    items.push({ name: val, on: true });
+  }
+  input.value = '';
+  renderChips();
+}
+
+function confirmScan() {
+  const selected = items.filter(it => it.on).map(it => it.name);
+  const box = document.getElementById('ingredients');
+  const existing = box.value.split(',').map(s => s.trim()).filter(Boolean);
+  const lower = existing.map(s => s.toLowerCase());
+  const merged = [...existing, ...selected.filter(s => !lower.includes(s.toLowerCase()))];
+  box.value = merged.join(', ');
+  closeModal();
+}
+
+function closeModal() { document.getElementById('overlay').classList.remove('show'); }
+function resetDemo() { document.getElementById('ingredients').value = ''; closeModal(); }
+</script>
+</body>
+</html>

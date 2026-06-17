@@ -1,6 +1,7 @@
 import './globals.css';
 import Providers from './components/Providers';
 import Header from './components/Header';
+import AnalyticsProvider from './components/AnalyticsProvider';
 
 export const metadata = {
   title: 'AI Meal Decider',
@@ -14,6 +15,7 @@ export default function RootLayout({ children }) {
         <body>
           <Header />
           {children}
+          <AnalyticsProvider />
         </body>
       </html>
     </Providers>

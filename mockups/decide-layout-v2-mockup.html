@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Meal Decider — Decide Layout v2</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0a0a14;
+    color: #eee;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    padding: 28px 16px 56px;
+  }
+  .pageTitle { text-align: center; margin-bottom: 6px; font-size: 1.5rem; font-weight: 800; }
+  .pageTitle span { color: #f7c948; }
+  .pageSub { text-align: center; color: #888; font-size: .9rem; margin-bottom: 26px; line-height: 1.6; }
+  .pageSub b { color: #bbb; }
+  .frames { display: flex; gap: 36px; justify-content: center; flex-wrap: wrap; align-items: flex-start; }
+  .frameCol { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .frameLabel { font-size: .95rem; font-weight: 700; text-align: center; }
+  .frameLabel small { display: block; color: #888; font-weight: 400; font-size: .78rem; margin-top: 3px; max-width: 300px; line-height: 1.5; }
+  .badge { display: inline-block; background: #2ecc7122; color: #2ecc71; border: 1px solid #2ecc7155; font-size: .68rem; padding: 2px 9px; border-radius: 20px; margin-left: 5px; vertical-align: middle; }
+
+  .phone {
+    width: 330px; height: 600px;
+    background: #0f0f1a;
+    border: 9px solid #1c1c2e;
+    border-radius: 34px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 16px 48px rgba(0,0,0,.6);
+    display: flex; flex-direction: column;
+  }
+  .screen { flex: 1; overflow-y: auto; scrollbar-width: none; }
+  .screen::-webkit-scrollbar { display: none; }
+
+  .appHeader { padding: 22px 18px 6px; display: flex; justify-content: space-between; align-items: center; }
+  .appHeader .logo { font-weight: 800; font-size: 1.05rem; }
+  .appHeader .logo span { color: #f7c948; }
+  .signUp {
+    background: linear-gradient(135deg, #6c6cff, #a855f7);
+    color: #fff; font-size: .72rem; font-weight: 700;
+    padding: 7px 15px; border-radius: 50px; cursor: pointer; border: none;
+  }
+
+  .card { background: #16162a; border: 1px solid #2a2a4a; border-radius: 15px; padding: 14px; margin: 8px 14px 12px; }
+  .label { display: block; font-size: .66rem; font-weight: 600; color: #8888bb; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 9px; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 10px; }
+  .chips.below { margin: 10px 0 2px; }
+  .ingChip {
+    display: inline-flex; align-items: center; gap: 5px;
+    background: #6c6cff22; border: 1px solid #6c6cff55; color: #aaaaff;
+    border-radius: 18px; padding: 7px 12px; font-size: .82rem;
+  }
+  .ingChip b { cursor: pointer; color: #7777cc; font-weight: 400; }
+
+  .input {
+    width: 100%; background: #0f0f1a; border: 1px solid #2a2a4a; border-radius: 12px;
+    padding: 12px 14px; color: #eee; font-size: .9rem; outline: none; margin-bottom: 10px;
+  }
+  .input::placeholder { color: #555; }
+  .input:focus { border-color: #6c6cff; }
+
+  .spinBtn {
+    width: 100%; border: none; border-radius: 50px; padding: 14px;
+    background: linear-gradient(135deg, #f7c948, #ff6b6b);
+    color: #1a1a1a; font-weight: 800; font-size: .95rem; letter-spacing: .4px;
+    cursor: pointer; box-shadow: 0 4px 18px rgba(247, 201, 72, .22);
+    margin-bottom: 8px; font-family: inherit;
+  }
+  .spinBtn:active { transform: scale(.97); }
+
+  .pantryBtn {
+    width: 100%; border: 1px solid #2a2a4a; border-radius: 12px; padding: 11px;
+    background: #1e1e3a; color: #aaa; font-weight: 600; font-size: .82rem; cursor: pointer;
+  }
+
+  .chipRow { display: flex; gap: 7px; overflow-x: auto; padding-bottom: 3px; scrollbar-width: none; }
+  .chipRow::-webkit-scrollbar { display: none; }
+  .fChip {
+    flex-shrink: 0; padding: 8px 14px; border-radius: 20px;
+    border: 1px solid #2a2a4a; background: #0f0f1a; color: #999; font-size: .78rem; cursor: pointer;
+  }
+
+  .tabBar { display: flex; background: #13131f; border-top: 1px solid #23233a; padding: 6px 0 10px; }
+  .tab { flex: 1; text-align: center; font-size: .6rem; color: #666; }
+  .tab .ico { font-size: 1.15rem; display: block; margin-bottom: 1px; filter: grayscale(1) opacity(.55); }
+  .tab.active { color: #8c8cff; }
+  .tab.active .ico { filter: none; }
+  .scanWrap { flex: 1; text-align: center; }
+  .scanCenter {
+    width: 46px; height: 46px; border-radius: 50%; border: 4px solid #0f0f1a;
+    background: linear-gradient(135deg, #2ecc71, #1abc9c); font-size: 1.2rem;
+    margin-top: -20px; cursor: pointer;
+  }
+  .scanLbl { display: block; font-size: .6rem; color: #2ecc71; font-weight: 600; }
+</style>
+</head>
+<body>
+
+<div class="pageTitle">📱 Decide screen — <span>new layout</span></div>
+<div class="pageSub">SPIN moved inside the card: input → <b>SPIN THE WHEEL</b> → Load from pantry. The floating bottom button is gone.<br>Three options for where the ingredient chips live — <b>type in any phone and press Enter</b> to see chips appear.</div>
+
+<div class="frames">
+
+  <!-- A: chips ABOVE input (current) -->
+  <div class="frameCol">
+    <div class="frameLabel">A — Chips above the input <small>What's live today, just with SPIN moved into the card.</small></div>
+    <div class="phone">
+      <div class="screen">
+        <div class="appHeader"><div class="logo">🎰 Meal <span>Decider</span></div><button class="signUp">Sign Up</button></div>
+        <div class="card">
+          <span class="label">What's in your fridge?</span>
+          <div class="chips" id="chipsA">
+            <span class="ingChip">chicken <b onclick="this.parentElement.remove()">✕</b></span>
+            <span class="ingChip">rice <b onclick="this.parentElement.remove()">✕</b></span>
+          </div>
+          <input class="input" placeholder="Type an ingredient, press Enter…" onkeydown="addChip(event,'chipsA')">
+          <button class="spinBtn">🎡 SPIN THE WHEEL</button>
+          <button class="pantryBtn">🧊 Load from pantry</button>
+        </div>
+        <div class="card">
+          <span class="label">Diet</span>
+          <div class="chipRow"><span class="fChip">Vegetarian</span><span class="fChip">Vegan</span><span class="fChip">Gluten-free</span><span class="fChip">Dairy-free</span></div>
+        </div>
+      </div>
+      <div class="tabBar">
+        <div class="tab active"><span class="ico">🎡</span>Decide</div>
+        <div class="tab"><span class="ico">📒</span>History</div>
+        <div class="scanWrap"><button class="scanCenter">📸</button><span class="scanLbl">Scan</span></div>
+        <div class="tab"><span class="ico">🧺</span>Pantry</div>
+        <div class="tab"><span class="ico">👤</span>Profile</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- B: chips BELOW input -->
+  <div class="frameCol">
+    <div class="frameLabel">B — Chips below the input <span class="badge">MY PICK</span><small>You type at the top of the card, added ingredients collect right under it, actions follow.</small></div>
+    <div class="phone">
+      <div class="screen">
+        <div class="appHeader"><div class="logo">🎰 Meal <span>Decider</span></div><button class="signUp">Sign Up</button></div>
+        <div class="card">
+          <span class="label">What's in your fridge?</span>
+          <input class="input" style="margin-bottom:0" placeholder="Type an ingredient, press Enter…" onkeydown="addChip(event,'chipsB')">
+          <div class="chips below" id="chipsB">
+            <span class="ingChip">chicken <b onclick="this.parentElement.remove()">✕</b></span>
+            <span class="ingChip">rice <b onclick="this.parentElement.remove()">✕</b></span>
+          </div>
+          <button class="spinBtn">🎡 SPIN THE WHEEL</button>
+          <button class="pantryBtn">🧊 Load from pantry</button>
+        </div>
+        <div class="card">
+          <span class="label">Diet</span>
+          <div class="chipRow"><span class="fChip">Vegetarian</span><span class="fChip">Vegan</span><span class="fChip">Gluten-free</span><span class="fChip">Dairy-free</span></div>
+        </div>
+      </div>
+      <div class="tabBar">
+        <div class="tab active"><span class="ico">🎡</span>Decide</div>
+        <div class="tab"><span class="ico">📒</span>History</div>
+        <div class="scanWrap"><button class="scanCenter">📸</button><span class="scanLbl">Scan</span></div>
+        <div class="tab"><span class="ico">🧺</span>Pantry</div>
+        <div class="tab"><span class="ico">👤</span>Profile</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- C: no chips -->
+  <div class="frameCol">
+    <div class="frameLabel">C — No chips at all <small>Ingredients stay in the typing field as a comma list (like desktop). Cleanest look, but harder to remove one item.</small></div>
+    <div class="phone">
+      <div class="screen">
+        <div class="appHeader"><div class="logo">🎰 Meal <span>Decider</span></div><button class="signUp">Sign Up</button></div>
+        <div class="card">
+          <span class="label">What's in your fridge?</span>
+          <input class="input" value="chicken, rice" placeholder="e.g. chicken, rice, tomatoes…">
+          <button class="spinBtn">🎡 SPIN THE WHEEL</button>
+          <button class="pantryBtn">🧊 Load from pantry</button>
+        </div>
+        <div class="card">
+          <span class="label">Diet</span>
+          <div class="chipRow"><span class="fChip">Vegetarian</span><span class="fChip">Vegan</span><span class="fChip">Gluten-free</span><span class="fChip">Dairy-free</span></div>
+        </div>
+      </div>
+      <div class="tabBar">
+        <div class="tab active"><span class="ico">🎡</span>Decide</div>
+        <div class="tab"><span class="ico">📒</span>History</div>
+        <div class="scanWrap"><button class="scanCenter">📸</button><span class="scanLbl">Scan</span></div>
+        <div class="tab"><span class="ico">🧺</span>Pantry</div>
+        <div class="tab"><span class="ico">👤</span>Profile</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function addChip(event, target) {
+    if (event.key !== 'Enter' || !event.target.value.trim()) return;
+    const chip = document.createElement('span');
+    chip.className = 'ingChip';
+    chip.innerHTML = event.target.value.trim() + ' <b onclick="this.parentElement.remove()">✕</b>';
+    document.getElementById(target).appendChild(chip);
+    event.target.value = '';
+  }
+</script>
+</body>
+</html>

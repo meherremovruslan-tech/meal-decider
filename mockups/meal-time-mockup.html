@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Meal Time chips — mockup</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #0f0f1a;
+    color: #eee;
+    padding: 32px 20px 80px;
+  }
+  h1 { text-align: center; font-size: 22px; margin: 0 0 6px; }
+  .sub { text-align: center; color: #777; font-size: 14px; margin: 0 0 26px; }
+
+  /* demo time-of-day switcher */
+  .timebar {
+    display: flex; gap: 8px; justify-content: center; margin-bottom: 30px;
+  }
+  .timebar span { color: #888; font-size: 13px; align-self: center; margin-right: 4px; }
+  .timebar button {
+    background: #16162a; border: 1px solid #2a2a4a; color: #ccc;
+    border-radius: 20px; padding: 7px 16px; font-size: 13px; cursor: pointer;
+  }
+  .timebar button.on { border-color: #f7c948; color: #f7c948; }
+
+  .panels { display: flex; gap: 28px; justify-content: center; flex-wrap: wrap; align-items: flex-start; }
+  .panelTitle {
+    font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
+    color: #666; text-align: center; margin-bottom: 10px;
+  }
+
+  /* ---- desktop card replica ---- */
+  .card {
+    width: 480px; background: #16162a; border: 1px solid #2a2a4a;
+    border-radius: 16px; padding: 22px;
+  }
+  .label {
+    display: block; font-size: 12px; font-weight: 600; color: #8888bb;
+    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 12px;
+  }
+  .inputRow { display: flex; gap: 8px; margin-bottom: 12px; }
+  .input {
+    flex: 1; background: #0f0f1a; border: 1px solid #2a2a4a; color: #888;
+    border-radius: 10px; padding: 11px 14px; font-size: 14px;
+  }
+  .btnPrimary {
+    background: linear-gradient(135deg, #667eea, #764ba2); color: #fff;
+    border: none; border-radius: 10px; padding: 11px 18px; font-size: 14px; font-weight: 600;
+  }
+
+  .sectionLabel {
+    font-size: 12px; color: #8888bb; font-weight: 600; margin: 14px 0 8px;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .chipRow { display: flex; gap: 8px; flex-wrap: wrap; }
+  .chip {
+    background: #0f0f1a; border: 1px solid #2a2a4a; color: #aaa;
+    border-radius: 20px; padding: 8px 16px; font-size: 13.5px; cursor: pointer;
+    transition: all .15s; position: relative;
+  }
+  .chip:hover { border-color: #555; }
+  .chip.active {
+    border-color: #f7c948; color: #f7c948; background: rgba(247, 201, 72, .08);
+    font-weight: 600;
+  }
+  .chip.active .autoBadge {
+    display: inline-block;
+  }
+  .autoBadge {
+    display: none;
+    font-size: 10px; font-weight: 700; color: #0f0f1a; background: #f7c948;
+    border-radius: 8px; padding: 1px 6px; margin-left: 6px; vertical-align: 1px;
+  }
+  .hint {
+    margin-top: 9px; font-size: 12.5px; color: #888;
+    display: flex; align-items: center; gap: 6px;
+  }
+  .hint b { color: #f7c948; font-weight: 600; }
+
+  /* ---- mobile replica ---- */
+  .phone {
+    width: 300px; background: #0f0f1a; border: 1px solid #2a2a4a;
+    border-radius: 28px; padding: 18px 14px 16px;
+  }
+  .mLogo { font-size: 1.05rem; font-weight: 800; margin: 2px 6px 12px; }
+  .mLogo span { color: #f7c948; }
+  .mCard { background: #16162a; border: 1px solid #2a2a4a; border-radius: 14px; padding: 14px; }
+  .mInput {
+    background: #0f0f1a; border: 1px solid #2a2a4a; color: #777; border-radius: 10px;
+    padding: 10px 12px; font-size: 13px; margin-bottom: 10px;
+  }
+  .mSpin {
+    background: linear-gradient(135deg, #667eea, #764ba2); color: #fff; text-align: center;
+    border-radius: 10px; padding: 11px; font-weight: 700; font-size: 14px; margin-bottom: 12px;
+  }
+  .mHint { margin-top: 8px; font-size: 11.5px; color: #888; }
+  .mHint b { color: #f7c948; font-weight: 600; }
+
+  /* Option A: one-line segmented control — all 3 always visible */
+  .seg {
+    display: grid; grid-template-columns: 1fr 1fr 1fr;
+    background: #0f0f1a; border: 1px solid #2a2a4a; border-radius: 12px;
+    overflow: visible; padding: 3px; gap: 3px;
+  }
+  .seg .cell {
+    position: relative; border: none; background: transparent; color: #999;
+    border-radius: 9px; padding: 8px 2px; font-size: 12px; cursor: pointer;
+    white-space: nowrap; font-family: inherit;
+  }
+  .seg .cell.active {
+    background: rgba(247, 201, 72, .12); color: #f7c948; font-weight: 700;
+  }
+
+  /* Option B: stacked emoji-over-label segments */
+  .seg2 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6px; }
+  .seg2 .cell {
+    position: relative; background: #0f0f1a; border: 1px solid #2a2a4a; color: #999;
+    border-radius: 12px; padding: 9px 2px 7px; cursor: pointer; text-align: center;
+    font-family: inherit; display: flex; flex-direction: column; align-items: center; gap: 3px;
+  }
+  .seg2 .cell .em { font-size: 19px; line-height: 1; }
+  .seg2 .cell .tx { font-size: 11px; }
+  .seg2 .cell.active { border-color: #f7c948; color: #f7c948; background: rgba(247, 201, 72, .08); font-weight: 700; }
+
+  .miniAuto {
+    position: absolute; top: -7px; right: 6px;
+    font-size: 9px; font-weight: 700; color: #0f0f1a; background: #f7c948;
+    border-radius: 7px; padding: 1px 5px;
+  }
+
+  .note {
+    max-width: 760px; margin: 34px auto 0; background: #16162a; border: 1px solid #2a2a4a;
+    border-radius: 12px; padding: 16px 20px; font-size: 13.5px; color: #9a9a9a; line-height: 1.6;
+  }
+  .note b { color: #ccc; }
+</style>
+</head>
+<body>
+
+<h1>Meal time chips — replacing diet filters</h1>
+<p class="sub">interactive: use the time-of-day switcher, then tap chips to see the hint change</p>
+
+<div class="timebar">
+  <span>Pretend it's…</span>
+  <button data-t="breakfast" onclick="setTime('breakfast')">🌅 Morning</button>
+  <button data-t="lunch" class="on" onclick="setTime('lunch')">☀️ Midday</button>
+  <button data-t="dinner" onclick="setTime('dinner')">🌙 Evening</button>
+</div>
+
+<div class="panels">
+
+  <div>
+    <div class="panelTitle">Desktop — Step 1 card</div>
+    <div class="card">
+      <span class="label">Step 1 — What's in your fridge?</span>
+      <div class="inputRow">
+        <div class="input">e.g. chicken, rice, tomatoes, garlic...</div>
+        <button class="btnPrimary">Suggest</button>
+      </div>
+
+      <div class="sectionLabel">🍽️ What meal are we deciding?</div>
+      <div class="chipRow" id="dRow"></div>
+      <div class="hint" id="dHint"></div>
+    </div>
+  </div>
+
+  <div>
+    <div class="panelTitle">Mobile A — one-line segmented bar</div>
+    <div class="phone">
+      <div class="mLogo">🎰 Meal <span>Decider</span></div>
+      <div class="mCard">
+        <div class="mInput">chicken, rice, tomatoes…</div>
+        <div class="mSpin">🎰 SPIN</div>
+        <div class="seg" id="mRowA"></div>
+        <div class="mHint" id="mHintA"></div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <div class="panelTitle">Mobile B — emoji-stacked segments</div>
+    <div class="phone">
+      <div class="mLogo">🎰 Meal <span>Decider</span></div>
+      <div class="mCard">
+        <div class="mInput">chicken, rice, tomatoes…</div>
+        <div class="mSpin">🎰 SPIN</div>
+        <div class="seg2" id="mRowB"></div>
+        <div class="mHint" id="mHintB"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="note">
+  <b>How the smart default works:</b> when the page opens, the chip matching the clock is already
+  selected and carries a small <b>AUTO</b> badge. The hint line underneath spells it out:
+  <i>“✨ We picked <b>Lunch</b> for you — it’s midday. Tap another to change.”</i>
+  The moment the user taps a different chip, the AUTO badge disappears and the hint switches to a
+  plain confirmation (<i>“Dinner it is. The AI will suggest dinner meals.”</i>), so it never feels
+  like the app is overriding them. Tapping the selected chip again deselects it
+  (hint: <i>“No preference — the AI will suggest any kind of meal.”</i>).
+  <br><br>
+  <b>Time windows:</b> 04:00–11:00 → Breakfast · 11:00–16:00 → Lunch · 16:00–04:00 → Dinner.
+</div>
+
+<script>
+  const MEALS = [
+    { id: 'breakfast', label: '🍳 Breakfast' },
+    { id: 'lunch',     label: '🥗 Lunch' },
+    { id: 'dinner',    label: '🍲 Dinner' },
+  ];
+  const TIME_WORD = { breakfast: "it's morning", lunch: "it's midday", dinner: "it's evening" };
+
+  let autoPick = 'lunch';   // what the clock suggests (demo switcher)
+  let selected = 'lunch';   // current selection
+  let isAuto = true;        // selection still the automatic one?
+
+  function setTime(t) {
+    autoPick = t; selected = t; isAuto = true;
+    document.querySelectorAll('.timebar button').forEach(b => b.classList.toggle('on', b.dataset.t === t));
+    render();
+  }
+
+  function tap(id) {
+    if (selected === id) { selected = null; } else { selected = id; }
+    isAuto = false;
+    render();
+  }
+
+  function hintHTML() {
+    if (isAuto && selected) {
+      return `✨ We picked <b>${cap(selected)}</b> for you — ${TIME_WORD[autoPick]}. Tap another to change.`;
+    }
+    if (selected) {
+      return `${cap(selected)} it is. The AI will suggest ${selected} meals.`;
+    }
+    return `No preference — the AI will suggest any kind of meal.`;
+  }
+
+  function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
+
+  function render() {
+    // desktop chips
+    const dRow = document.getElementById('dRow');
+    dRow.innerHTML = '';
+    for (const m of MEALS) {
+      const btn = document.createElement('button');
+      btn.className = 'chip' + (selected === m.id ? ' active' : '');
+      btn.innerHTML = m.label + (isAuto && selected === m.id ? '<span class="autoBadge">AUTO</span>' : '');
+      btn.onclick = () => tap(m.id);
+      dRow.appendChild(btn);
+    }
+    document.getElementById('dHint').innerHTML = hintHTML();
+
+    // mobile A: one-line segmented bar
+    const rowA = document.getElementById('mRowA');
+    rowA.innerHTML = '';
+    for (const m of MEALS) {
+      const btn = document.createElement('button');
+      btn.className = 'cell' + (selected === m.id ? ' active' : '');
+      btn.innerHTML = m.label + (isAuto && selected === m.id ? '<span class="miniAuto">AUTO</span>' : '');
+      btn.onclick = () => tap(m.id);
+      rowA.appendChild(btn);
+    }
+    document.getElementById('mHintA').innerHTML = hintHTML();
+
+    // mobile B: emoji-stacked segments
+    const rowB = document.getElementById('mRowB');
+    rowB.innerHTML = '';
+    for (const m of MEALS) {
+      const [em, tx] = m.label.split(' ');
+      const btn = document.createElement('button');
+      btn.className = 'cell' + (selected === m.id ? ' active' : '');
+      btn.innerHTML = `<span class="em">${em}</span><span class="tx">${tx}</span>` +
+        (isAuto && selected === m.id ? '<span class="miniAuto">AUTO</span>' : '');
+      btn.onclick = () => tap(m.id);
+      rowB.appendChild(btn);
+    }
+    document.getElementById('mHintB').innerHTML = hintHTML();
+  }
+  render();
+</script>
+
+</body>
+</html>

@@ -180,10 +180,21 @@
   font-weight: 600;
 }
 
-.saveRow {
-  display: flex;
-  gap: 8px;
-  margin-top: 16px;
+.autoBadge {
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: #0f0f1a;
+  background: #f7c948;
+  border-radius: 8px;
+  padding: 1px 6px;
+  margin-left: 6px;
+  vertical-align: 1px;
+}
+
+.mealTimeHint {
+  margin: 9px 0 0;
+  font-size: 0.78rem;
+  color: #888;
 }
 
 .btnSave {
@@ -225,26 +236,13 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
   margin-bottom: 12px;
 }
 
 .recipeHeader .label {
   margin-bottom: 0;
-}
-
-.btnShare {
-  background: linear-gradient(135deg, #6c6cff, #a855f7);
-  border: none;
-  color: #fff;
-  font-size: 0.85rem;
-  font-weight: 700;
-  padding: 8px 18px;
-  letter-spacing: 0.2px;
-  flex-shrink: 0;
-}
-
-.btnShare:hover:not(:disabled) {
-  opacity: 0.88;
 }
 
 .historyItem {
@@ -259,12 +257,12 @@
 
 .historyItemTop {
   display: flex;
-  justify-content: space-between;
   align-items: center;
 }
 
 .historyMeal {
   color: #ddd;
+  flex: 1;
 }
 
 .historyMeta {
@@ -272,6 +270,26 @@
   font-size: 0.8rem;
   flex-shrink: 0;
   margin-left: 12px;
+}
+
+.historyDelete {
+  flex-shrink: 0;
+  width: 26px;
+  height: 26px;
+  margin-left: 8px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: #555;
+  font-size: 0.9rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.historyDelete:hover {
+  background: #ff6b6b22;
+  color: #ff6b6b;
 }
 
 .historyRecipe {
@@ -344,6 +362,97 @@
   letter-spacing: 0.3px;
 }
 .btnSignUpGate:hover:not(:disabled) { opacity: 0.88; }
+
+/* Fridge scan */
+.btnScan {
+  background: linear-gradient(135deg, #2ecc71, #1abc9c);
+  border: none;
+  color: #06281a;
+  font-size: 0.85rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.btnScan:hover:not(:disabled) { opacity: 0.9; }
+
+.scanState { text-align: center; padding: 20px 0; }
+
+.scanThumb {
+  width: 120px;
+  height: 90px;
+  border-radius: 10px;
+  margin: 0 auto 14px;
+  background: linear-gradient(135deg, #1e1e3a, #2a2a4a);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.scanBeam {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #2ecc71, transparent);
+  animation: scanBeam 1.4s ease-in-out infinite;
+}
+
+@keyframes scanBeam {
+  0%, 100% { top: 8%; }
+  50% { top: 88%; }
+}
+
+.scanHint {
+  color: #666;
+  font-size: 0.78rem;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.scanChip {
+  border: 1px solid #2ecc7166;
+  background: #2ecc7118;
+  color: #7fe0ab;
+  border-radius: 999px;
+  padding: 7px 14px;
+  font-size: 0.88rem;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+
+.scanChipOff {
+  border-color: #2a2a4a;
+  background: transparent;
+  color: #555;
+  text-decoration: line-through;
+}
+
+.btnScanConfirm {
+  width: 100%;
+  background: #2ecc71;
+  color: #06281a;
+  padding: 12px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-top: 12px;
+}
+.btnScanConfirm:hover:not(:disabled) { background: #3dd880; }
+.btnScanConfirm:disabled { opacity: 0.5; cursor: default; }
+
+.scanAgain {
+  display: block;
+  margin: 10px auto 0;
+  background: none;
+  border: none;
+  color: #6c8cff;
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+.scanAgain:hover { text-decoration: underline; }
 
 /* Pantry button */
 .btnPantry {

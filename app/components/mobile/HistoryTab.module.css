@@ -1,0 +1,85 @@
+.wrap { padding-bottom: 16px; }
+
+.head { padding: 18px 20px 8px; }
+.logo { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.5px; }
+
+.search {
+  display: block;
+  width: calc(100% - 32px);
+  margin: 4px 16px 12px;
+  background: #16162a;
+  border: 1px solid #2a2a4a;
+  border-radius: 12px;
+  padding: 12px 14px;
+  color: #eee;
+  font-size: 0.9rem;
+  outline: none;
+}
+.search:focus { border-color: #6c6cff; }
+.search::placeholder { color: #555; }
+
+.empty { text-align: center; color: #555; font-size: 0.9rem; padding: 40px 30px; }
+
+.group {
+  padding: 8px 20px 6px;
+  color: #666;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.item {
+  background: #16162a;
+  border: 1px solid #2a2a4a;
+  border-radius: 14px;
+  margin: 0 16px 10px;
+  overflow: hidden;
+}
+.item.open { border-color: #6c6cff55; }
+
+.itemTop {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding: 14px 16px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+}
+.meal { flex: 1; font-size: 0.95rem; color: #ddd; font-weight: 600; }
+.when { color: #777; font-size: 0.75rem; margin-right: 8px; }
+.chev { color: #555; font-size: 0.8rem; transition: transform 0.2s; }
+.open .chev { transform: rotate(180deg); }
+
+.itemBody { padding: 0 16px 14px; }
+
+.recipe {
+  background: #0f0f1a;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 0.8rem;
+  color: #bbb;
+  line-height: 1.65;
+  margin-bottom: 10px;
+  white-space: pre-wrap;
+}
+.recipe strong { color: #f7c948; }
+
+.actions { display: flex; align-items: center; gap: 8px; }
+.noRecipe { color: #555; font-size: 0.8rem; flex: 1; }
+
+.delete {
+  margin-left: auto;
+  flex-shrink: 0;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  border: 1px solid #ff6b6b33;
+  background: #1e1e3a;
+  color: #ff8888;
+  font-size: 0.95rem;
+  cursor: pointer;
+}

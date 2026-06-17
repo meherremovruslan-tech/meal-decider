@@ -3,22 +3,7 @@ import { useSearchParams } from 'next/navigation';
 import { Suspense } from 'react';
 import styles from './page.module.css';
 import '../globals.css';
-
-function renderRecipe(text) {
-  return text.split('\n').map((line, i) => {
-    if (/^#{1,3}\s/.test(line)) {
-      return <div key={i} style={{ color: '#f7c948', fontWeight: 700, marginTop: 12, marginBottom: 4 }}>{line.replace(/^#+\s/, '')}</div>;
-    }
-    if (/^\*\*(.+)\*\*$/.test(line)) {
-      return <div key={i} style={{ color: '#f7c948', fontWeight: 700, marginTop: 10, marginBottom: 2 }}>{line.replace(/\*\*/g, '')}</div>;
-    }
-    if (/^[-•*]\s/.test(line)) {
-      return <div key={i} style={{ paddingLeft: 12 }}>• {line.replace(/^[-•*]\s/, '')}</div>;
-    }
-    if (line.trim() === '') return <div key={i} style={{ height: 6 }} />;
-    return <div key={i}>{line}</div>;
-  });
-}
+import { renderRecipe, stripTitle } from '@/lib/renderRecipe';
 
 function SharedRecipe() {
   const params = useSearchParams();
@@ -83,7 +68,7 @@ function SharedRecipe() {
         ) : (
           <>
             <div className={styles.mealName}>{meal}</div>
-            <div className={styles.recipe}>{renderRecipe(recipe)}</div>
+            <div className={styles.recipe}>{renderRecipe(stripTitle(recipe, meal))}</div>
           </>
         )}
       </div>

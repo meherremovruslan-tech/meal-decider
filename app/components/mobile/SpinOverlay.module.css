@@ -1,0 +1,139 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: #0f0f1a;
+  z-index: 95; /* above spin dock (80) + tab bar (90), below UndoToast/modals (100) */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  overflow-y: auto;
+}
+
+.close {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: none;
+  border: none;
+  color: #888;
+  font-size: 1.5rem;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+  padding: 24px;
+  width: 100%;
+}
+
+.canvas {
+  border-radius: 50%;
+  box-shadow: 0 0 50px rgba(108, 108, 255, 0.25);
+}
+
+.spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid #333;
+  border-top-color: #6c6cff;
+  border-radius: 50%;
+  animation: overlaySpin 0.7s linear infinite;
+}
+@keyframes overlaySpin { to { transform: rotate(360deg); } }
+
+.hint { color: #888; font-size: 0.9rem; text-align: center; line-height: 1.7; }
+
+.spinBtn {
+  border: none;
+  border-radius: 50px;
+  padding: 15px 48px;
+  background: linear-gradient(135deg, #f7c948, #ff6b6b);
+  color: #1a1a1a;
+  font-weight: 800;
+  font-size: 1.1rem;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.spinBtn:active { transform: scale(0.97); }
+.spinBtn:disabled { opacity: 0.4; }
+
+.gate {
+  background: #1a1a2e;
+  border: 1px solid #2a2a4a;
+  border-radius: 12px;
+  padding: 20px 16px;
+  text-align: center;
+  margin: 0 24px;
+}
+.gate p { color: #aaa; font-size: 0.9rem; line-height: 1.7; margin: 0 0 14px; }
+.gateBtn {
+  display: inline-block;
+  background: linear-gradient(135deg, #6c6cff, #a855f7);
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 700;
+  padding: 10px 24px;
+  border-radius: 50px;
+  text-decoration: none;
+}
+
+.result {
+  background: linear-gradient(135deg, #6c6cff22, #f7c94822);
+  border: 1px solid #6c6cff44;
+  border-radius: 14px;
+  padding: 16px 26px;
+  text-align: center;
+}
+.resultSub { font-size: 0.72rem; color: #888; letter-spacing: 1px; }
+.resultIntro { font-size: 0.82rem; color: #999; margin-top: 7px; }
+.resultMeal { font-size: 1.25rem; font-weight: 700; color: #f7c948; margin: 3px 0 12px; }
+
+.recipeBtn {
+  border: none;
+  border-radius: 50px;
+  padding: 13px 32px;
+  background: #2ecc71;
+  color: #0f1a10;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+.recipeBtn:disabled { opacity: 0.5; }
+
+.recipeView {
+  width: 100%;
+  max-height: 100vh;
+  overflow-y: auto;
+  padding: 56px 20px 32px;
+}
+.recipeHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.recipeText { white-space: pre-wrap; line-height: 1.7; font-size: 0.92rem; color: #ccc; }
+.recipeText strong { color: #f7c948; }
+
+.doneBtn {
+  width: 100%;
+  margin-top: 20px;
+  border: none;
+  border-radius: 14px;
+  padding: 15px;
+  background: #6c6cff;
+  color: #fff;
+  font-weight: 700;
+  font-size: 0.95rem;
+  cursor: pointer;
+  font-family: inherit;
+}

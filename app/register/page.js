@@ -4,6 +4,8 @@ import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import styles from '../auth.module.css';
+import { APP_NAME } from '@/lib/brand';
+import { track } from '@/lib/analytics';
 
 const PASSWORD_REGEX = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -48,6 +50,7 @@ export default function RegisterPage() {
       return;
     }
 
+    track('signed_up');
     router.push('/login?registered=true');
   }
 
@@ -61,7 +64,7 @@ export default function RegisterPage() {
   return (
     <div className={styles.page}>
       <div className={styles.card}>
-        <div className={styles.logo}>🎰 Meal Decider</div>
+        <div className={styles.logo}>🎰 {APP_NAME}</div>
         <div className={styles.subtitle}>Create an account to save your recipes</div>
 
         {globalError && (

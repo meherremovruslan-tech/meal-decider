@@ -3,6 +3,7 @@ import { Suspense, useState } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import styles from '../auth.module.css';
+import { APP_NAME } from '@/lib/brand';
 
 const PASSWORD_REGEX = /^(?=.*[A-Z])(?=.*\d).{8,}$/;
 
@@ -73,7 +74,7 @@ function ResetPasswordForm() {
   return (
     <div className={styles.page}>
       <div className={styles.card}>
-        <div className={styles.logo}>🎰 Meal Decider</div>
+        <div className={styles.logo}>🎰 {APP_NAME}</div>
         <div className={styles.subtitle}>Choose a new password</div>
 
         {globalError && (

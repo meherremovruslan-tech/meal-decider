@@ -21,17 +21,21 @@ export async function POST(req) {
   const session = await getServerSession(authOptions);
   if (!session) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const { meal_name, recipe, ingredients, dietary_filters, cuisine } = await req.json();
+  const { meal_name, recipe, ingredients, dietary_filters, cuisine, created_at } = await req.json();
   if (!meal_name) return Response.json({ error: 'meal_name required' }, { status: 400 });
 
-  const { error } = await supabase.from('recipe_history').insert({
+  const row = {
     user_id: session.user.id,
     meal_name,
     recipe: recipe || '',
     ingredients: ingredients || '',
     dietary_filters: dietary_filters || [],
     cuisine: cuisine || null,
-  });
+  };
+  // Restoring a deleted entry (undo) keeps its original date
+  if (created_at && !Number.isNaN(Date.parse(created_at))) row.created_at = created_at;
+
+  const { error } = await supabase.from('recipe_history').insert(row);
 
   if (error) return Response.json({ error: error.message }, { status: 500 });
   return Response.json({ success: true });

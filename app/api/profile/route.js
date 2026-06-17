@@ -1,6 +1,7 @@
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { supabase } from '@/lib/supabase';
+import { AVATAR_POOL } from '@/lib/avatars';
 
 export async function GET() {
   const session = await getServerSession(authOptions);
@@ -27,16 +28,30 @@ export async function PATCH(req) {
   const session = await getServerSession(authOptions);
   if (!session) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-  const { display_name } = await req.json();
-  if (typeof display_name !== 'string') {
-    return Response.json({ error: 'display_name must be a string' }, { status: 400 });
+  const { display_name, avatar_emoji } = await req.json();
+  const updates = {};
+
+  if (display_name !== undefined) {
+    if (typeof display_name !== 'string') {
+      return Response.json({ error: 'display_name must be a string' }, { status: 400 });
+    }
+    updates.display_name = display_name.trim().slice(0, 50) || null;
   }
 
-  const trimmed = display_name.trim().slice(0, 50);
+  if (avatar_emoji !== undefined) {
+    if (!AVATAR_POOL.includes(avatar_emoji)) {
+      return Response.json({ error: 'Invalid avatar' }, { status: 400 });
+    }
+    updates.avatar_emoji = avatar_emoji;
+  }
+
+  if (Object.keys(updates).length === 0) {
+    return Response.json({ error: 'Nothing to update' }, { status: 400 });
+  }
 
   const { error } = await supabase
     .from('users')
-    .update({ display_name: trimmed || null })
+    .update(updates)
     .eq('id', session.user.id);
 
   if (error) return Response.json({ error: error.message }, { status: 500 });

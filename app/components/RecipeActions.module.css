@@ -1,0 +1,43 @@
+.row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  border: 1px solid #2a2a4a;
+  background: #1e1e3a;
+  color: #aaa;
+  border-radius: 10px;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+
+.btn:hover:not(:disabled) {
+  background: #252545;
+  color: #eee;
+  border-color: #6c6cff44;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.share {
+  background: linear-gradient(135deg, #6c6cff, #a855f7);
+  border: none;
+  color: #fff;
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+
+.share:hover:not(:disabled) {
+  opacity: 0.88;
+  background: linear-gradient(135deg, #6c6cff, #a855f7);
+  color: #fff;
+}

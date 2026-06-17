@@ -5,6 +5,7 @@ export async function middleware(req) {
   const { pathname } = req.nextUrl;
 
   if (
+    pathname === '/' ||
     pathname.startsWith('/login') ||
     pathname.startsWith('/register') ||
     pathname.startsWith('/verify-email') ||
@@ -12,7 +13,9 @@ export async function middleware(req) {
     pathname.startsWith('/reset-password') ||
     pathname.startsWith('/api') ||
     pathname.startsWith('/r') ||
-    pathname.startsWith('/_next')
+    pathname.startsWith('/_next') ||
+    pathname.startsWith('/_vercel') ||
+    pathname === '/icon.svg'
   ) {
     return NextResponse.next();
   }

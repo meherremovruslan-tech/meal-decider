@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { renderRecipe } from '@/lib/renderRecipe';
 import FridgeIcon from '../components/FridgeIcon';
+import UndoToast from '../components/UndoToast';
+import RecipeActions from '../components/RecipeActions';
 import styles from './profile.module.css';
 
 export default function ProfilePage() {
@@ -14,6 +16,7 @@ export default function ProfilePage() {
   const [profile, setProfile] = useState(null);
   const [history, setHistory] = useState([]);
   const [expandedId, setExpandedId] = useState(null);
+  const [pendingUndo, setPendingUndo] = useState(null);
 
   const [displayName, setDisplayName] = useState('');
   const [nameStatus, setNameStatus] = useState('');
@@ -57,6 +60,47 @@ export default function ProfilePage() {
     fetch('/api/history')
       .then(r => r.json())
       .then(data => { if (data.history) setHistory(data.history); });
+  }
+
+  // Undo window: the toast disappears after 5s and the deletion becomes final
+  useEffect(() => {
+    if (!pendingUndo) return;
+    const t = setTimeout(() => setPendingUndo(null), 5000);
+    return () => clearTimeout(t);
+  }, [pendingUndo]);
+
+  function deleteHistoryItem(e, h, index) {
+    e.stopPropagation();
+    setHistory(prev => prev.filter(x => x.id !== h.id));
+    if (expandedId === h.id) setExpandedId(null);
+    fetch(`/api/history/${h.id}`, { method: 'DELETE' }).catch(() => {});
+    setPendingUndo({ item: h, index, ts: Date.now() });
+  }
+
+  function undoHistoryDelete() {
+    if (!pendingUndo) return;
+    const { item, index } = pendingUndo;
+    setPendingUndo(null);
+    setHistory(prev => {
+      const next = [...prev];
+      next.splice(Math.min(index, next.length), 0, item);
+      return next;
+    });
+    // Re-insert on the server with the original date, then refetch for fresh ids
+    fetch('/api/history', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        meal_name: item.meal_name,
+        recipe: item.recipe || '',
+        ingredients: item.ingredients || '',
+        dietary_filters: item.dietary_filters || [],
+        cuisine: item.cuisine || null,
+        created_at: item.created_at,
+      }),
+    })
+      .then(() => fetchHistory())
+      .catch(() => {});
   }
 
   function fetchPantry() {
@@ -326,7 +370,7 @@ export default function ProfilePage() {
                 onChange={e => setNewListName(e.target.value)}
                 onKeyDown={e => e.key === 'Enter' && createPantryList()}
                 placeholder="List name (e.g. Fridge)"
-                maxLength={200}
+                maxLength={250}
                 autoFocus
               />
               <button className={styles.btnSmall} onClick={createPantryList} disabled={creatingList || !newListName.trim()}>
@@ -336,6 +380,11 @@ export default function ProfilePage() {
                 Cancel
               </button>
             </div>
+          )}
+          {showNewListForm && (
+            <p className={styles.pantryAddHint}>
+              Type a name for your list here — not ingredients. You&rsquo;ll add those inside the list after creating it.
+            </p>
           )}
 
           {pantryLoading && <div className={styles.emptyState}>Loading…</div>}
@@ -354,7 +403,7 @@ export default function ProfilePage() {
                     onChange={e => setEditingListName(e.target.value)}
                     onBlur={() => renamePantryList(list.id, editingListName)}
                     onKeyDown={e => e.key === 'Enter' && renamePantryList(list.id, editingListName)}
-                    maxLength={200}
+                    maxLength={250}
                     autoFocus
                   />
                 ) : (
@@ -398,7 +447,7 @@ export default function ProfilePage() {
                       onChange={e => setNewIngredientInputs(prev => ({ ...prev, [list.id]: e.target.value }))}
                       onKeyDown={e => e.key === 'Enter' && addPantryIngredient(list)}
                       placeholder="e.g. rice, tomato, pasta"
-                      maxLength={200}
+                      maxLength={250}
                       autoFocus
                     />
                     <button className={styles.btnSmall} onClick={() => addPantryIngredient(list)} disabled={updatingListIds.has(list.id)}>Add</button>
@@ -430,7 +479,7 @@ export default function ProfilePage() {
           {history.length === 0 && (
             <div className={styles.emptyState}>No meals yet — go spin the wheel!</div>
           )}
-          {history.map(h => (
+          {history.map((h, idx) => (
             <div
               key={h.id}
               className={styles.historyItem}
@@ -441,10 +490,22 @@ export default function ProfilePage() {
                 <span className={styles.historyDate}>
                   {new Date(h.created_at).toLocaleDateString()}
                 </span>
+                <button
+                  type="button"
+                  className={styles.historyDelete}
+                  title="Delete"
+                  aria-label={`Delete ${h.meal_name}`}
+                  onClick={(e) => deleteHistoryItem(e, h, idx)}
+                >
+                  ✕
+                </button>
               </div>
               {expandedId === h.id && h.recipe && (
                 <div className={styles.historyRecipe}>
                   {renderRecipe(h.recipe)}
+                  <div style={{ marginTop: 12 }}>
+                    <RecipeActions meal={h.meal_name} recipe={h.recipe} />
+                  </div>
                 </div>
               )}
               {expandedId === h.id && !h.recipe && (
@@ -457,6 +518,10 @@ export default function ProfilePage() {
         </div>
 
       </div>
+
+      {pendingUndo && (
+        <UndoToast key={pendingUndo.ts} meal={pendingUndo.item.meal_name} onUndo={undoHistoryDelete} />
+      )}
     </div>
   );
 }

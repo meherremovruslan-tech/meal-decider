@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Meal Decider — Mobile UI Mockup</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0a0a14;
+    color: #eee;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    padding: 32px 16px 64px;
+  }
+  .pageTitle { text-align: center; margin-bottom: 6px; font-size: 1.6rem; font-weight: 800; }
+  .pageTitle span { color: #f7c948; }
+  .pageSub { text-align: center; color: #888; font-size: .9rem; margin-bottom: 28px; }
+  .frames { display: flex; gap: 48px; justify-content: center; flex-wrap: wrap; }
+  .frameCol { display: flex; flex-direction: column; align-items: center; gap: 14px; }
+  .frameLabel { font-size: 1rem; font-weight: 700; text-align: center; }
+  .frameLabel small { display: block; color: #888; font-weight: 400; font-size: .8rem; margin-top: 4px; max-width: 340px; line-height: 1.5; }
+  .badge { display: inline-block; background: #2ecc7122; color: #2ecc71; border: 1px solid #2ecc7155; font-size: .7rem; padding: 2px 10px; border-radius: 20px; margin-left: 6px; vertical-align: middle; }
+
+  /* ---------- phone frame ---------- */
+  .phone {
+    width: 375px; height: 740px;
+    background: #0f0f1a;
+    border: 10px solid #1c1c2e;
+    border-radius: 40px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 20px 60px rgba(0,0,0,.6);
+    display: flex; flex-direction: column;
+  }
+  .notch {
+    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 140px; height: 24px; background: #1c1c2e;
+    border-radius: 0 0 16px 16px; z-index: 50;
+  }
+  .screen { flex: 1; overflow-y: auto; scrollbar-width: none; position: relative; }
+  .screen::-webkit-scrollbar { display: none; }
+
+  /* ---------- shared UI bits ---------- */
+  .appHeader { padding: 40px 20px 8px; display: flex; justify-content: space-between; align-items: center; }
+  .appHeader .logo { font-weight: 800; font-size: 1.15rem; }
+  .appHeader .logo span { color: #f7c948; }
+  .avatar { width: 34px; height: 34px; border-radius: 50%; background: #1e1e3a; border: 1px solid #2a2a4a; display: flex; align-items: center; justify-content: center; font-size: 1.05rem; }
+  .card { background: #16162a; border: 1px solid #2a2a4a; border-radius: 16px; padding: 16px; margin: 0 16px 14px; }
+  .label { display: block; font-size: .72rem; font-weight: 600; color: #8888bb; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px; }
+  .chipRow { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; }
+  .chipRow::-webkit-scrollbar { display: none; }
+  .chip {
+    flex-shrink: 0; padding: 9px 16px; border-radius: 22px;
+    border: 1px solid #2a2a4a; background: #0f0f1a; color: #999;
+    font-size: .85rem; cursor: pointer; user-select: none; transition: all .15s;
+  }
+  .chip.on { background: #6c6cff22; border-color: #6c6cff; color: #8c8cff; font-weight: 600; }
+  .chip.cuisineOn { background: #f7c94822; border-color: #f7c948; color: #f7c948; font-weight: 600; }
+  .ingChip {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: #6c6cff22; border: 1px solid #6c6cff55; color: #aaaaff;
+    border-radius: 20px; padding: 8px 14px; font-size: .9rem; margin: 0 6px 8px 0;
+  }
+  .ingChip b { cursor: pointer; color: #7777cc; font-weight: 400; }
+
+  /* ================= OPTION A : app-style ================= */
+  .tabBar {
+    display: flex; background: #13131f; border-top: 1px solid #23233a;
+    padding: 8px 0 14px;
+  }
+  .tab { flex: 1; text-align: center; font-size: .68rem; color: #666; cursor: pointer; user-select: none; }
+  .tab .ico { font-size: 1.35rem; display: block; margin-bottom: 2px; filter: grayscale(1) opacity(.55); }
+  .tab.active { color: #8c8cff; }
+  .tab.active .ico { filter: none; }
+
+  .aScreen { display: none; }
+  .aScreen.visible { display: block; }
+
+  .bigInput {
+    width: 100%; background: #0f0f1a; border: 1px solid #2a2a4a; border-radius: 14px;
+    padding: 14px 16px; color: #eee; font-size: 1rem; margin-bottom: 12px;
+  }
+  .bigInput::placeholder { color: #555; }
+  .scanBtn {
+    width: 100%; border: none; border-radius: 14px; padding: 15px;
+    background: linear-gradient(135deg, #2ecc71, #1abc9c); color: #06281a;
+    font-weight: 700; font-size: .95rem; cursor: pointer; margin-bottom: 8px;
+  }
+  .pantryBtn {
+    width: 100%; border: 1px solid #2a2a4a; border-radius: 14px; padding: 13px;
+    background: #1e1e3a; color: #aaa; font-weight: 600; font-size: .9rem; cursor: pointer;
+  }
+  .stickySpin {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    padding: 12px 16px 10px;
+    background: linear-gradient(transparent, #0f0f1a 35%);
+    z-index: 10;
+  }
+  .spinCta {
+    width: 100%; border: none; border-radius: 50px; padding: 17px;
+    background: linear-gradient(135deg, #f7c948, #ff6b6b); color: #1a1a1a;
+    font-weight: 800; font-size: 1.1rem; letter-spacing: .5px; cursor: pointer;
+    box-shadow: 0 6px 24px rgba(247, 201, 72, .25);
+  }
+  .spinCta:active { transform: scale(.97); }
+
+  /* wheel screen */
+  .wheelScreen {
+    position: absolute; inset: 0; background: #0f0f1a; z-index: 40;
+    display: none; flex-direction: column; align-items: center; justify-content: center; gap: 22px;
+  }
+  .wheelScreen.visible { display: flex; }
+  .wheelPointer { font-size: 1.6rem; margin-bottom: -14px; z-index: 2; }
+  .wheel {
+    width: 290px; height: 290px; border-radius: 50%;
+    background: conic-gradient(#6c6cff 0 60deg, #f7c948 60deg 120deg, #ff6b6b 120deg 180deg, #2ecc71 180deg 240deg, #a855f7 240deg 300deg, #1abc9c 300deg 360deg);
+    box-shadow: 0 0 50px rgba(108,108,255,.25);
+    transition: transform 2.4s cubic-bezier(.17,.67,.16,.99);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .wheelHub { width: 64px; height: 64px; border-radius: 50%; background: #0f0f1a; border: 3px solid #2a2a4a; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; }
+  .resultBadge {
+    background: linear-gradient(135deg, #6c6cff22, #f7c94822);
+    border: 1px solid #6c6cff44; border-radius: 14px; padding: 14px 26px; text-align: center;
+    opacity: 0; transition: opacity .4s;
+  }
+  .resultBadge.show { opacity: 1; }
+  .resultBadge .sub { font-size: .75rem; color: #888; }
+  .resultBadge .meal { font-size: 1.25rem; font-weight: 700; color: #f7c948; }
+  .recipeBtn {
+    border: none; border-radius: 50px; padding: 13px 32px; background: #2ecc71; color: #0f1a10;
+    font-weight: 700; font-size: .95rem; cursor: pointer; opacity: 0; transition: opacity .4s;
+  }
+  .recipeBtn.show { opacity: 1; }
+  .closeWheel { position: absolute; top: 42px; right: 18px; background: none; border: none; color: #888; font-size: 1.5rem; cursor: pointer; }
+
+  /* recipe screen */
+  .recipeText { font-size: .85rem; color: #ccc; line-height: 1.7; }
+  .recipeText strong { color: #f7c948; }
+  .actionRow { display: flex; gap: 8px; margin-top: 14px; }
+  .actionRow button {
+    flex: 1; background: #1e1e3a; border: 1px solid #2a2a4a; color: #aaa;
+    border-radius: 12px; padding: 11px 0; font-size: .82rem; cursor: pointer;
+  }
+  .backLink { background: none; border: none; color: #6c8cff; font-size: .9rem; cursor: pointer; padding: 0 0 12px 20px; }
+
+  /* history (option A) */
+  .histItem { display: flex; align-items: center; padding: 14px 4px; border-bottom: 1px solid #1e1e3a; font-size: .92rem; }
+  .histItem:last-child { border: none; }
+  .histItem .meal { flex: 1; color: #ddd; }
+  .histItem .when { color: #777; font-size: .75rem; }
+  .swipeHint { text-align: center; color: #555; font-size: .75rem; padding: 10px; }
+
+  .placeholderScreen { text-align: center; color: #555; padding: 120px 30px; font-size: .9rem; line-height: 1.8; }
+  .placeholderScreen .big { font-size: 2.6rem; display: block; margin-bottom: 10px; }
+
+  /* ================= OPTION B : polished single scroll ================= */
+  .stepNum { display: inline-flex; width: 22px; height: 22px; border-radius: 50%; background: #6c6cff; color: #fff; font-size: .72rem; font-weight: 700; align-items: center; justify-content: center; margin-right: 8px; }
+  .bSpinWrap { text-align: center; padding: 6px 0 2px; }
+  .bWheelMini {
+    width: 190px; height: 190px; border-radius: 50%; margin: 8px auto 14px;
+    background: conic-gradient(#6c6cff 0 60deg, #f7c948 60deg 120deg, #ff6b6b 120deg 180deg, #2ecc71 180deg 240deg, #a855f7 240deg 300deg, #1abc9c 300deg 360deg);
+    box-shadow: 0 0 30px rgba(108,108,255,.2);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .bWheelMini .wheelHub { width: 46px; height: 46px; font-size: 1.1rem; }
+</style>
+</head>
+<body>
+
+<div class="pageTitle">📱 Meal <span>Decider</span> — Mobile UI</div>
+<div class="pageSub">Two design directions. Both are interactive — tap around inside the phones.</div>
+
+<div class="frames">
+
+  <!-- ============ OPTION A ============ -->
+  <div class="frameCol">
+    <div class="frameLabel">Option A — App-style <span class="badge">RECOMMENDED</span>
+      <small>Bottom tab bar like a native app. Spin becomes a full-screen moment. One thumb does everything. Pairs perfectly with "Add to Home Screen" later. <b>Try: add ingredients → tap SPIN → Get Recipe → tabs below.</b></small>
+    </div>
+    <div class="phone">
+      <div class="notch"></div>
+
+      <!-- DECIDE tab -->
+      <div class="screen aScreen visible" id="a-decide">
+        <div class="appHeader"><div class="logo">Meal <span>Decider</span></div><div class="avatar">🍳</div></div>
+
+        <div class="card">
+          <span class="label">What's in your fridge?</span>
+          <div id="a-ings">
+            <span class="ingChip">chicken <b>✕</b></span>
+            <span class="ingChip">rice <b>✕</b></span>
+          </div>
+          <input class="bigInput" placeholder="Type an ingredient…" onkeydown="if(event.key==='Enter'&&this.value.trim()){addIng(this.value.trim());this.value=''}">
+          <button class="scanBtn">📸&nbsp; Scan your fridge</button>
+          <button class="pantryBtn">🧺&nbsp; Load from pantry</button>
+        </div>
+
+        <div class="card">
+          <span class="label">Diet</span>
+          <div class="chipRow">
+            <div class="chip" onclick="this.classList.toggle('on')">🥦 Vegetarian</div>
+            <div class="chip" onclick="this.classList.toggle('on')">🌱 Vegan</div>
+            <div class="chip" onclick="this.classList.toggle('on')">🚫 Gluten-free</div>
+            <div class="chip" onclick="this.classList.toggle('on')">🥩 Keto</div>
+          </div>
+          <div style="height:12px"></div>
+          <span class="label">Cuisine</span>
+          <div class="chipRow">
+            <div class="chip cuisineOn">🍝 Italian</div>
+            <div class="chip" onclick="this.classList.toggle('cuisineOn')">🌮 Mexican</div>
+            <div class="chip" onclick="this.classList.toggle('cuisineOn')">🍜 Asian</div>
+            <div class="chip" onclick="this.classList.toggle('cuisineOn')">🥙 Middle East</div>
+            <div class="chip" onclick="this.classList.toggle('cuisineOn')">🍛 Indian</div>
+          </div>
+        </div>
+
+        <div style="height:90px"></div>
+        <div class="stickySpin"><button class="spinCta" onclick="openWheel()">🎡 &nbsp;SPIN THE WHEEL</button></div>
+      </div>
+
+      <!-- HISTORY tab -->
+      <div class="screen aScreen" id="a-history">
+        <div class="appHeader"><div class="logo">Meal History</div><div class="avatar">🍳</div></div>
+        <div class="card">
+          <div class="histItem"><span class="meal">🍝 Chicken Alfredo</span><span class="when">today</span></div>
+          <div class="histItem"><span class="meal">🌮 Beef Tacos</span><span class="when">yesterday</span></div>
+          <div class="histItem"><span class="meal">🍜 Veggie Stir-fry</span><span class="when">Mon</span></div>
+          <div class="histItem"><span class="meal">🥘 Shakshuka</span><span class="when">Sun</span></div>
+          <div class="swipeHint">← swipe a meal to delete or share →</div>
+        </div>
+      </div>
+
+      <!-- PANTRY tab -->
+      <div class="screen aScreen" id="a-pantry">
+        <div class="appHeader"><div class="logo">My Pantry</div><div class="avatar">🍳</div></div>
+        <div class="placeholderScreen"><span class="big">🧺</span>Your pantry lists live here —<br>tap one to load it into the decider.</div>
+      </div>
+
+      <!-- PROFILE tab -->
+      <div class="screen aScreen" id="a-profile">
+        <div class="appHeader"><div class="logo">Profile</div><div class="avatar">🍳</div></div>
+        <div class="placeholderScreen"><span class="big">👤</span>Avatar, cuisine preferences,<br>account settings.</div>
+      </div>
+
+      <!-- WHEEL full-screen moment -->
+      <div class="wheelScreen" id="a-wheel">
+        <button class="closeWheel" onclick="closeWheel()">✕</button>
+        <div class="wheelPointer">🔻</div>
+        <div class="wheel" id="a-wheelDisc"><div class="wheelHub">🍽️</div></div>
+        <div class="resultBadge" id="a-result"><div class="sub">THE WHEEL CHOSE…</div><div class="meal">🍝 Chicken Alfredo</div></div>
+        <button class="recipeBtn" id="a-recipeBtn" onclick="showScreen('a-recipe');closeWheel(true)">Get Recipe 👨‍🍳</button>
+      </div>
+
+      <!-- RECIPE screen -->
+      <div class="screen aScreen" id="a-recipe">
+        <div class="appHeader"><div class="logo">Your Recipe</div><div class="avatar">🍳</div></div>
+        <button class="backLink" onclick="showScreen('a-decide')">← back to decider</button>
+        <div class="card">
+          <div class="recipeText"><strong>🍝 Chicken Alfredo</strong> · 30 min · serves 2<br><br><strong>Ingredients</strong><br>• 2 chicken breasts<br>• 200g fettuccine<br>• 150ml cream<br>• parmesan, garlic, butter<br><br><strong>Steps</strong><br>1. Season and pan-fry the chicken…<br>2. Cook pasta until al dente…<br>3. Make the sauce with cream and parmesan…</div>
+          <div class="actionRow"><button>🔗 Share</button><button>📋 Copy</button><button>⬇️ Save</button></div>
+        </div>
+      </div>
+
+      <!-- tab bar -->
+      <div class="tabBar">
+        <div class="tab active" data-target="a-decide" onclick="tabTo(this)"><span class="ico">🎡</span>Decide</div>
+        <div class="tab" data-target="a-history" onclick="tabTo(this)"><span class="ico">📒</span>History</div>
+        <div class="tab" data-target="a-pantry" onclick="tabTo(this)"><span class="ico">🧺</span>Pantry</div>
+        <div class="tab" data-target="a-profile" onclick="tabTo(this)"><span class="ico">👤</span>Profile</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ OPTION B ============ -->
+  <div class="frameCol">
+    <div class="frameLabel">Option B — Polished single scroll
+      <small>Keeps today's one-page flow, but tuned for thumbs: bigger buttons, horizontally scrolling chips, smaller wheel inline. Cheaper to build, less "app-like". <b>Scroll inside the phone.</b></small>
+    </div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="screen">
+        <div class="appHeader"><div class="logo">Meal <span>Decider</span></div><div class="avatar">🍳</div></div>
+
+        <div class="card">
+          <span class="label"><span class="stepNum">1</span>What's in your fridge?</span>
+          <span class="ingChip">chicken <b>✕</b></span>
+          <span class="ingChip">rice <b>✕</b></span>
+          <input class="bigInput" placeholder="Type an ingredient…">
+          <div style="display:flex;gap:8px">
+            <button class="scanBtn" style="margin:0">📸 Scan</button>
+            <button class="pantryBtn">🧺 Pantry</button>
+          </div>
+          <div style="height:12px"></div>
+          <div class="chipRow">
+            <div class="chip" onclick="this.classList.toggle('on')">🥦 Vegetarian</div>
+            <div class="chip" onclick="this.classList.toggle('on')">🌱 Vegan</div>
+            <div class="chip" onclick="this.classList.toggle('on')">🚫 Gluten-free</div>
+          </div>
+          <div style="height:8px"></div>
+          <div class="chipRow">
+            <div class="chip cuisineOn">🍝 Italian</div>
+            <div class="chip" onclick="this.classList.toggle('cuisineOn')">🌮 Mexican</div>
+            <div class="chip" onclick="this.classList.toggle('cuisineOn')">🍜 Asian</div>
+            <div class="chip" onclick="this.classList.toggle('cuisineOn')">🍛 Indian</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <span class="label"><span class="stepNum">2</span>Spin the wheel!</span>
+          <div class="bSpinWrap">
+            <div class="bWheelMini" id="b-wheel"><div class="wheelHub">🍽️</div></div>
+            <button class="spinCta" style="width:auto;padding:14px 44px" onclick="spinB()">🎡 SPIN</button>
+          </div>
+        </div>
+
+        <div class="card" id="b-resultCard" style="display:none">
+          <span class="label"><span class="stepNum">3</span>The wheel chose…</span>
+          <div class="resultBadge show" style="width:100%"><div class="sub">DINNER TONIGHT</div><div class="meal">🍝 Chicken Alfredo</div></div>
+          <div style="text-align:center;margin-top:12px"><button class="recipeBtn show">Get Recipe 👨‍🍳</button></div>
+        </div>
+
+        <div class="card">
+          <span class="label">Recent meals</span>
+          <div class="histItem"><span class="meal">🌮 Beef Tacos</span><span class="when">yesterday</span></div>
+          <div class="histItem"><span class="meal">🍜 Veggie Stir-fry</span><span class="when">Mon</span></div>
+        </div>
+        <div style="height:24px"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  /* ---- option A ---- */
+  function showScreen(id) {
+    document.querySelectorAll('.aScreen').forEach(s => s.classList.remove('visible'));
+    document.getElementById(id).classList.add('visible');
+    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.target === id));
+  }
+  function tabTo(el) { showScreen(el.dataset.target); }
+  function addIng(name) {
+    const chip = document.createElement('span');
+    chip.className = 'ingChip';
+    chip.innerHTML = name + ' <b>✕</b>';
+    document.getElementById('a-ings').appendChild(chip);
+  }
+  let aDeg = 0;
+  function openWheel() {
+    document.getElementById('a-wheel').classList.add('visible');
+    document.getElementById('a-result').classList.remove('show');
+    document.getElementById('a-recipeBtn').classList.remove('show');
+    setTimeout(() => {
+      aDeg += 1800 + Math.random() * 360;
+      document.getElementById('a-wheelDisc').style.transform = 'rotate(' + aDeg + 'deg)';
+      setTimeout(() => {
+        document.getElementById('a-result').classList.add('show');
+        document.getElementById('a-recipeBtn').classList.add('show');
+      }, 2500);
+    }, 300);
+  }
+  function closeWheel(silent) {
+    document.getElementById('a-wheel').classList.remove('visible');
+  }
+  /* ---- option B ---- */
+  let bDeg = 0;
+  function spinB() {
+    bDeg += 1800 + Math.random() * 360;
+    const w = document.getElementById('b-wheel');
+    w.style.transition = 'transform 2.4s cubic-bezier(.17,.67,.16,.99)';
+    w.style.transform = 'rotate(' + bDeg + 'deg)';
+    setTimeout(() => { document.getElementById('b-resultCard').style.display = 'block'; }, 2500);
+  }
+</script>
+</body>
+</html>

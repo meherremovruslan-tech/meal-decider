@@ -1,0 +1,66 @@
+.gate {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 30px 24px 6px;
+}
+
+.iconCircle {
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(247, 201, 72, 0.18), rgba(255, 107, 107, 0.14));
+  border: 1px solid rgba(247, 201, 72, 0.32);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.9rem;
+  margin-bottom: 16px;
+}
+
+.title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 8px;
+}
+
+.text {
+  font-size: 0.9rem;
+  color: #999;
+  line-height: 1.6;
+  margin: 0 0 20px;
+  max-width: 260px;
+}
+
+.primaryBtn {
+  display: block;
+  width: 100%;
+  max-width: 240px;
+  background: linear-gradient(135deg, #f7c948, #ff6b6b);
+  color: #1a1a1a;
+  font-weight: 800;
+  font-size: 0.9rem;
+  border-radius: 50px;
+  padding: 13px;
+  text-align: center;
+  text-decoration: none;
+  box-shadow: 0 4px 18px rgba(247, 201, 72, 0.22);
+  margin-bottom: 10px;
+}
+
+.secondaryBtn {
+  display: block;
+  width: 100%;
+  max-width: 240px;
+  background: transparent;
+  border: 1px solid #3a3a5a;
+  color: #ccc;
+  font-weight: 700;
+  font-size: 0.88rem;
+  border-radius: 50px;
+  padding: 11px;
+  text-align: center;
+  text-decoration: none;
+}

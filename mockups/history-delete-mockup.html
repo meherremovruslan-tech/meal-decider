@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup — Editable Meal History</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0f0f1a;
+    color: #ccc;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    padding: 32px 16px 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 28px;
+  }
+  h1 { font-size: 1.3rem; color: #eee; text-align: center; }
+  .note {
+    max-width: 760px; text-align: center; color: #8888bb; font-size: 0.9rem; line-height: 1.6;
+  }
+  .columns {
+    display: flex; gap: 28px; flex-wrap: wrap; justify-content: center; align-items: flex-start;
+  }
+  .option { width: 360px; max-width: 95vw; display: flex; flex-direction: column; gap: 14px; }
+  .optionTitle {
+    text-align: center; font-weight: 700; color: #f7c948; font-size: 1rem;
+  }
+  .optionDesc { text-align: center; color: #888; font-size: 0.82rem; line-height: 1.5; min-height: 40px; }
+  .card {
+    width: 100%;
+    background: #16162a;
+    border: 1px solid #2a2a4a;
+    border-radius: 16px;
+    padding: 20px;
+  }
+  .label {
+    display: block; font-size: 0.8rem; font-weight: 600; color: #8888bb;
+    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;
+  }
+  .countBadge {
+    background: #6c6cff33; color: #9d9dff; border-radius: 10px;
+    font-size: 0.72rem; padding: 2px 8px; margin-left: 8px; letter-spacing: 0;
+  }
+  .historyItem {
+    padding: 10px 0; border-bottom: 1px solid #1e1e3a; font-size: 0.9rem;
+  }
+  .historyItem:last-child { border-bottom: none; }
+  .rowTop { display: flex; align-items: center; gap: 8px; }
+  .historyMeal { color: #ddd; flex: 1; cursor: pointer; }
+  .historyMeta { color: #666; font-size: 0.78rem; flex-shrink: 0; }
+  .deleteBtn {
+    flex-shrink: 0;
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    border: none;
+    background: transparent;
+    color: #555;
+    font-size: 1rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+  }
+  .deleteBtn:hover { background: #ff6b6b22; color: #ff6b6b; }
+
+  /* Option A: inline confirm */
+  .confirmRow {
+    display: flex; align-items: center; gap: 10px;
+    background: #ff6b6b11;
+    border: 1px solid #ff6b6b44;
+    border-radius: 10px;
+    padding: 8px 12px;
+  }
+  .confirmText { flex: 1; color: #ffb1b1; font-size: 0.85rem; }
+  .btnMini {
+    border: none; border-radius: 8px; padding: 6px 14px;
+    font-size: 0.8rem; font-weight: 600; cursor: pointer; font-family: inherit;
+  }
+  .btnDelete { background: #ff6b6b; color: #fff; }
+  .btnDelete:hover { background: #ff8585; }
+  .btnCancel { background: #1e1e3a; color: #aaa; border: 1px solid #2a2a4a; }
+  .btnCancel:hover { background: #252545; color: #eee; }
+
+  /* Option B: undo toast */
+  .toast {
+    position: fixed; left: 50%; transform: translateX(-50%);
+    bottom: 24px;
+    background: #1e1e3a;
+    border: 1px solid #2a2a4a;
+    color: #ddd;
+    border-radius: 12px;
+    padding: 12px 18px;
+    font-size: 0.88rem;
+    display: flex; align-items: center; gap: 14px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+    opacity: 0; pointer-events: none; transition: opacity 0.2s;
+  }
+  .toast.show { opacity: 1; pointer-events: auto; }
+  .undoBtn {
+    background: none; border: none; color: #6c8cff; font-weight: 700;
+    cursor: pointer; font-size: 0.88rem; font-family: inherit;
+  }
+  .undoBtn:hover { text-decoration: underline; }
+  .toastBar {
+    position: absolute; left: 0; bottom: 0; height: 3px;
+    background: #6c6cff; border-radius: 0 0 12px 12px;
+    animation: shrink 5s linear forwards;
+  }
+  @keyframes shrink { from { width: 100%; } to { width: 0; } }
+
+  .resetBtn {
+    margin-top: 4px;
+    background: #1e1e3a; border: 1px solid #2a2a4a; color: #aaa;
+    border-radius: 10px; padding: 8px 16px; font-size: 0.85rem; cursor: pointer;
+    font-family: inherit; align-self: center;
+  }
+  .resetBtn:hover { background: #252545; color: #eee; }
+  .empty { color: #555; font-size: 0.85rem; padding: 10px 0; }
+</style>
+</head>
+<body>
+
+<h1>🍽️ Editable Meal History — Mockup</h1>
+<p class="note">
+  Two ways the delete could feel. Both add a small <b>×</b> next to every meal
+  (it turns red when you point at it). <b>Try clicking the × buttons below — they work!</b><br>
+  The same design would apply to both the “Recent Meals” card on the main page and the “Meal History” card on the profile page.
+</p>
+
+<div class="columns">
+
+  <!-- OPTION A -->
+  <div class="option">
+    <div class="optionTitle">Option A — Ask before deleting</div>
+    <div class="optionDesc">Tapping × turns the row into a small red confirmation. Nothing is deleted until “Delete” is pressed. Safest, but two taps every time.</div>
+    <div class="card">
+      <span class="label">Recent Meals <span class="countBadge" id="countA">4</span></span>
+      <div id="listA"></div>
+    </div>
+    <button class="resetBtn" onclick="resetA()">↺ Reset demo</button>
+  </div>
+
+  <!-- OPTION B -->
+  <div class="option">
+    <div class="optionTitle">Option B — Delete instantly, with Undo</div>
+    <div class="optionDesc">Tapping × removes the meal immediately, and an “Undo” message appears for 5 seconds. One tap, mistakes are recoverable.</div>
+    <div class="card">
+      <span class="label">Meal History <span class="countBadge" id="countB">4</span></span>
+      <div id="listB"></div>
+    </div>
+    <button class="resetBtn" onclick="resetB()">↺ Reset demo</button>
+  </div>
+
+</div>
+
+<div class="toast" id="toast">
+  <span id="toastText">Deleted “Mutton Stew”</span>
+  <button class="undoBtn" onclick="undoB()">Undo</button>
+  <div class="toastBar" id="toastBar"></div>
+</div>
+
+<script>
+const MEALS = [
+  { meal: 'Mutton and Vegetable Stew', date: '6/11/2026' },
+  { meal: 'Creamy Garlic Pasta',       date: '6/10/2026' },
+  { meal: 'Veggie Fried Rice',         date: '6/8/2026'  },
+  { meal: 'Turkish Lentil Soup',       date: '6/5/2026'  },
+];
+
+/* ---------- Option A: inline confirm ---------- */
+let dataA = [...MEALS];
+let confirmingA = null;
+
+function renderA() {
+  const el = document.getElementById('listA');
+  document.getElementById('countA').textContent = dataA.length;
+  if (dataA.length === 0) { el.innerHTML = '<div class="empty">No meals yet — spin the wheel!</div>'; return; }
+  el.innerHTML = dataA.map((h, i) => {
+    if (confirmingA === i) {
+      return `<div class="historyItem">
+        <div class="confirmRow">
+          <span class="confirmText">Delete “${h.meal}”?</span>
+          <button class="btnMini btnDelete" onclick="confirmDeleteA(${i})">Delete</button>
+          <button class="btnMini btnCancel" onclick="cancelA()">Cancel</button>
+        </div>
+      </div>`;
+    }
+    return `<div class="historyItem">
+      <div class="rowTop">
+        <span class="historyMeal">${h.meal}</span>
+        <span class="historyMeta">${h.date}</span>
+        <button class="deleteBtn" title="Delete" onclick="askDeleteA(${i})">✕</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+function askDeleteA(i){ confirmingA = i; renderA(); }
+function cancelA(){ confirmingA = null; renderA(); }
+function confirmDeleteA(i){ dataA.splice(i,1); confirmingA = null; renderA(); }
+function resetA(){ dataA = [...MEALS]; confirmingA = null; renderA(); }
+renderA();
+
+/* ---------- Option B: instant + undo ---------- */
+let dataB = [...MEALS];
+let lastDeleted = null;
+let toastTimer = null;
+
+function renderB() {
+  const el = document.getElementById('listB');
+  document.getElementById('countB').textContent = dataB.length;
+  if (dataB.length === 0) { el.innerHTML = '<div class="empty">No meals yet — spin the wheel!</div>'; return; }
+  el.innerHTML = dataB.map((h, i) => `
+    <div class="historyItem">
+      <div class="rowTop">
+        <span class="historyMeal">${h.meal}</span>
+        <span class="historyMeta">${h.date}</span>
+        <button class="deleteBtn" title="Delete" onclick="deleteB(${i})">✕</button>
+      </div>
+    </div>`).join('');
+}
+function deleteB(i) {
+  lastDeleted = { item: dataB[i], index: i };
+  dataB.splice(i, 1);
+  renderB();
+  const toast = document.getElementById('toast');
+  document.getElementById('toastText').textContent = `Deleted “${lastDeleted.item.meal}”`;
+  const bar = document.getElementById('toastBar');
+  bar.style.animation = 'none'; void bar.offsetWidth; bar.style.animation = '';
+  toast.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { toast.classList.remove('show'); lastDeleted = null; }, 5000);
+}
+function undoB() {
+  if (lastDeleted) { dataB.splice(lastDeleted.index, 0, lastDeleted.item); lastDeleted = null; renderB(); }
+  document.getElementById('toast').classList.remove('show');
+  clearTimeout(toastTimer);
+}
+function resetB(){ dataB = [...MEALS]; renderB(); }
+renderB();
+</script>
+</body>
+</html>

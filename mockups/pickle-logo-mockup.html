@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pick'le — logo concepts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700&family=Nunito:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --c1: #FE9D6F; /* light orange */
+    --c2: #F96743; /* tomato */
+    --c3: #F6C94F; /* yellow */
+    --c4: #4DAE82; /* green */
+    --c5: #6C9FD4; /* blue */
+    --c6: #BF59B8; /* magenta */
+    --ink: #3a3a3a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Nunito', sans-serif;
+    background: #f4f1ec;
+    color: var(--ink);
+    padding: 40px 24px 80px;
+  }
+  h1 {
+    font-family: 'Baloo 2', sans-serif;
+    text-align: center;
+    font-size: 30px;
+    margin: 0 0 6px;
+  }
+  .sub {
+    text-align: center;
+    color: #8a8a8a;
+    margin: 0 0 40px;
+  }
+  .grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+    justify-content: center;
+    align-items: stretch;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+  .card {
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 6px 24px rgba(0,0,0,.07);
+    padding: 28px 26px 24px;
+    width: 380px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .tag {
+    font-size: 12px;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: #b0a89c;
+    font-weight: 600;
+    margin-bottom: 18px;
+  }
+  .stage {
+    height: 280px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+  }
+  .motto {
+    color: #9a9a9a;
+    font-size: 17px;
+    letter-spacing: .04em;
+    margin-top: 4px;
+  }
+  .why {
+    margin-top: 18px;
+    font-size: 13.5px;
+    line-height: 1.5;
+    color: #6f6a63;
+    border-top: 1px solid #efece6;
+    padding-top: 14px;
+  }
+  .iconrow {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 12px;
+    color: #b0a89c;
+  }
+
+  /* ---- the wheel ---- */
+  .wheel {
+    border-radius: 50%;
+    background: conic-gradient(
+      var(--c2) 0deg 60deg,
+      var(--c3) 60deg 120deg,
+      var(--c4) 120deg 180deg,
+      var(--c5) 180deg 240deg,
+      var(--c6) 240deg 300deg,
+      var(--c1) 300deg 360deg
+    );
+    position: relative;
+    flex: none;
+    transition: transform .2s;
+  }
+  .wheel.spinny:hover { animation: spin 1.4s cubic-bezier(.2,.8,.25,1); }
+  @keyframes spin { from { transform: rotate(0); } to { transform: rotate(720deg); } }
+
+  .wheel .hub {
+    position: absolute;
+    inset: 28%;
+    background: #fff;
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px rgba(0,0,0,.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .word {
+    font-family: 'Baloo 2', sans-serif;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1;
+    display: flex;
+    align-items: baseline;
+  }
+
+  /* ---- A: wheel as apostrophe ---- */
+  .apos-wheel {
+    width: .34em;
+    height: .34em;
+    display: inline-block;
+    margin: 0 .045em;
+    transform: translateY(-1.05em);
+  }
+  .apos-wheel .hub { inset: 30%; box-shadow: none; }
+
+  /* ---- C: fork pointer ---- */
+  .pointer-tri {
+    width: 0; height: 0;
+    border-left: 13px solid transparent;
+    border-right: 13px solid transparent;
+    border-top: 20px solid #2f2f2f;
+    margin-bottom: -8px;
+    z-index: 2;
+  }
+  .fork-pointer { margin-bottom: -14px; z-index: 2; }
+
+  .appicon {
+    width: 56px; height: 56px;
+    border-radius: 14px;
+    background: #fdf8ef;
+    box-shadow: 0 2px 8px rgba(0,0,0,.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+</style>
+</head>
+<body>
+
+<h1>Pick'le — logo concepts</h1>
+<p class="sub">same wheel, three ways to marry it to the new name &nbsp;·&nbsp; hover any wheel to spin it</p>
+
+<div class="grid">
+
+  <!-- ================= A ================= -->
+  <div class="card">
+    <div class="tag">A · wheel-as-apostrophe</div>
+    <div class="stage">
+      <div class="word" style="font-size:72px;">
+        Pick<span class="wheel spinny apos-wheel"><span class="hub"></span></span>le
+      </div>
+      <div class="motto">spin. cook. eat.</div>
+    </div>
+    <div class="iconrow">
+      app icon →
+      <div class="appicon">
+        <div class="wheel" style="width:38px;height:38px;"><span class="hub"></span></div>
+      </div>
+    </div>
+    <div class="why">
+      The wheel <b>becomes</b> the apostrophe — name and mark fuse into one compact
+      lockup that works anywhere text does. No cucumber anywhere; the punctuation
+      IS the brand. Smallest, most modern footprint.
+    </div>
+  </div>
+
+  <!-- ================= B ================= -->
+  <div class="card">
+    <div class="tag">B · classic swap</div>
+    <div class="stage">
+      <div style="display:flex;flex-direction:column;align-items:center;">
+        <div class="pointer-tri"></div>
+        <div class="wheel spinny" style="width:170px;height:170px;">
+          <span class="hub" style="font-size:34px;">🍴</span>
+        </div>
+      </div>
+      <div class="word" style="font-size:40px;">Pick'le</div>
+      <div class="motto">spin. cook. eat.</div>
+    </div>
+    <div class="iconrow">
+      app icon →
+      <div class="appicon" style="width:96px;height:96px;border-radius:24px;">
+        <div class="wheel" style="width:74px;height:74px;"><span class="hub" style="font-size:16px;">🍴</span></div>
+      </div>
+      <div class="appicon">
+        <div class="wheel" style="width:38px;height:38px;"><span class="hub" style="font-size:8px;">🍴</span></div>
+      </div>
+      <span>(large / small)</span>
+    </div>
+    <div class="why">
+      Your current logo, only the wordmark changes. Existing users instantly
+      recognize the app; zero redesign risk. The apostrophe stays plain
+      punctuation here.
+    </div>
+  </div>
+
+  <!-- ================= C ================= -->
+  <div class="card">
+    <div class="tag">C · the fork picks</div>
+    <div class="stage">
+      <div style="display:flex;flex-direction:column;align-items:center;">
+        <svg class="fork-pointer" width="30" height="52" viewBox="0 0 30 52">
+          <!-- fork pointing down: handle on top, tines at bottom -->
+          <rect x="12.5" y="0" width="5" height="26" rx="2.5" fill="#2f2f2f"/>
+          <path d="M5 24 h20 v8 a4 4 0 0 1 -4 4 h-12 a4 4 0 0 1 -4 -4 z" fill="#2f2f2f"/>
+          <rect x="5"    y="34" width="4" height="16" rx="2" fill="#2f2f2f"/>
+          <rect x="13"   y="34" width="4" height="18" rx="2" fill="#2f2f2f"/>
+          <rect x="21"   y="34" width="4" height="16" rx="2" fill="#2f2f2f"/>
+        </svg>
+        <div class="wheel spinny" style="width:170px;height:170px;">
+          <span class="hub"></span>
+        </div>
+      </div>
+      <div class="word" style="font-size:40px;">Pick'le</div>
+      <div class="motto">spin. cook. eat.</div>
+    </div>
+    <div class="iconrow">
+      app icon →
+      <div class="appicon" style="position:relative; overflow:hidden;">
+        <svg width="14" height="22" viewBox="0 0 30 52" style="position:absolute;top:2px;z-index:2;">
+          <rect x="12.5" y="0" width="5" height="26" rx="2.5" fill="#2f2f2f"/>
+          <path d="M5 24 h20 v8 a4 4 0 0 1 -4 4 h-12 a4 4 0 0 1 -4 -4 z" fill="#2f2f2f"/>
+          <rect x="5" y="34" width="4" height="16" rx="2" fill="#2f2f2f"/>
+          <rect x="13" y="34" width="4" height="18" rx="2" fill="#2f2f2f"/>
+          <rect x="21" y="34" width="4" height="16" rx="2" fill="#2f2f2f"/>
+        </svg>
+        <div class="wheel" style="width:38px;height:38px;margin-top:14px;"><span class="hub"></span></div>
+      </div>
+    </div>
+    <div class="why">
+      The pointer triangle becomes a <b>fork</b> — the fork literally <i>picks</i>
+      where the wheel lands, acting out the name. The fork &amp; knife move out of
+      the hub so the center stays clean for the winning meal.
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

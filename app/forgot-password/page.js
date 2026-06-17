@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import styles from '../auth.module.css';
+import { APP_NAME } from '@/lib/brand';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -45,7 +46,7 @@ export default function ForgotPasswordPage() {
   return (
     <div className={styles.page}>
       <div className={styles.card}>
-        <div className={styles.logo}>🎰 Meal Decider</div>
+        <div className={styles.logo}>🎰 {APP_NAME}</div>
         <div className={styles.subtitle}>Enter your email and we'll send you a reset link</div>
 
         <form onSubmit={handleSubmit}>

@@ -1,0 +1,51 @@
+.toast {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 24px;
+  z-index: 100;
+  background: #1e1e3a;
+  border: 1px solid #2a2a4a;
+  color: #ddd;
+  border-radius: 12px;
+  padding: 12px 18px;
+  font-size: 0.88rem;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+  overflow: hidden;
+}
+
+.undoBtn {
+  background: none;
+  border: none;
+  color: #6c8cff;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.88rem;
+  font-family: inherit;
+  padding: 0;
+}
+
+.undoBtn:hover {
+  text-decoration: underline;
+}
+
+.bar {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 3px;
+  background: #6c6cff;
+  animation: undoShrink 5s linear forwards;
+}
+
+@keyframes undoShrink {
+  from { width: 100%; }
+  to { width: 0; }
+}
+
+@media (max-width: 767px) {
+  .toast { bottom: 96px; }
+}

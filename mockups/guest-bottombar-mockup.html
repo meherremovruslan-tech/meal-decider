@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guest bottom-bar flows — mockup</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #0a0a14;
+    color: #eee;
+    padding: 32px 20px 80px;
+  }
+  h1 { text-align: center; font-size: 22px; margin: 0 0 6px; }
+  .sub { text-align: center; color: #777; font-size: 14px; margin: 0 0 18px; max-width: 700px; margin-left: auto; margin-right: auto; line-height: 1.6; }
+
+  .legend {
+    display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; margin-bottom: 22px;
+  }
+  .legend span {
+    background: #16162a; border: 1px solid #2a2a4a; border-radius: 20px;
+    padding: 6px 14px; font-size: 12.5px; color: #ccc;
+  }
+  .legend .ok { color: #4ecdc4; }
+  .legend .locked { color: #ff8a8a; }
+
+  .toggleRow {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    margin: 0 auto 24px; font-size: 13px; color: #aaa;
+  }
+  .modeToggle { display: flex; gap: 8px; }
+  .modeToggle button {
+    background: #16162a; border: 1px solid #2a2a4a; color: #ccc;
+    border-radius: 20px; padding: 8px 16px; font-size: 13px; cursor: pointer; font-family: inherit; font-weight: 600;
+  }
+  .modeToggle button.on { border-color: #f7c948; color: #f7c948; background: rgba(247,201,72,.08); }
+
+  .stage { display: flex; gap: 32px; justify-content: center; flex-wrap: wrap; align-items: flex-start; }
+  .col { display: flex; flex-direction: column; align-items: center; }
+  .panelTitle {
+    font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
+    color: #666; text-align: center; margin-bottom: 12px;
+  }
+  .hint {
+    text-align: center; color: #666; font-size: 12.5px; margin-top: 14px; max-width: 300px;
+  }
+
+  /* phone frame */
+  .phone {
+    width: 300px; height: 620px; background: #0f0f1a; border: 1px solid #2a2a4a;
+    border-radius: 28px; overflow: hidden; position: relative;
+    box-shadow: 0 20px 60px rgba(0,0,0,.5);
+    display: flex; flex-direction: column;
+  }
+  .notch {
+    width: 90px; height: 18px; background: #050509; border-radius: 0 0 12px 12px;
+    margin: 0 auto; position: relative; z-index: 2; flex-shrink: 0;
+  }
+  .screen { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+  .scrollArea { flex: 1; overflow-y: auto; }
+
+  .screenPanel { display: none; }
+  .screenPanel.show { display: block; }
+
+  /* shared head */
+  .head {
+    padding: 16px 18px 6px; display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  }
+  .logo { font-size: 1.1rem; font-weight: 800; letter-spacing: -0.5px; }
+  .logo span { color: #f7c948; }
+  .signUpBtn {
+    flex-shrink: 0; background: linear-gradient(135deg, #6c6cff, #a855f7); color: #fff;
+    font-size: 0.78rem; font-weight: 700; padding: 7px 16px; border-radius: 50px;
+  }
+
+  /* decide screen */
+  .dCard {
+    background: #16162a; border: 1px solid #2a2a4a; border-radius: 16px; padding: 16px; margin: 0 16px 14px;
+  }
+  .dLabel {
+    display: block; font-size: 0.68rem; font-weight: 600; color: #8888bb;
+    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;
+  }
+  .dInput {
+    width: 100%; background: #0f0f1a; border: 1px solid #2a2a4a; border-radius: 14px;
+    padding: 13px 14px; color: #eee; font-size: 0.9rem; margin-bottom: 12px;
+  }
+  .spinCta {
+    width: 100%; border: none; border-radius: 50px; padding: 14px;
+    background: linear-gradient(135deg, #f7c948, #ff6b6b); color: #1a1a1a;
+    font-weight: 800; font-size: 0.92rem; letter-spacing: 0.5px; text-align: center;
+    box-shadow: 0 4px 18px rgba(247, 201, 72, 0.22);
+  }
+  .spinHint { text-align: center; font-size: 0.74rem; color: #f7c948; margin: 9px 0 12px; }
+  .pantryBtn {
+    width: 100%; border: 1px solid #2a2a4a; border-radius: 14px; padding: 12px;
+    background: #1e1e3a; color: #aaa; font-weight: 600; font-size: 0.85rem; text-align: center;
+  }
+
+  /* history screen */
+  .histSearch {
+    margin: 6px 16px 12px; background: #16162a; border: 1px solid #2a2a4a; border-radius: 12px;
+    padding: 10px 14px; color: #777; font-size: 0.85rem;
+  }
+  .histGroup {
+    margin: 14px 18px 8px; font-size: 0.7rem; font-weight: 700; color: #666; text-transform: uppercase; letter-spacing: 1px;
+  }
+  .histItem {
+    margin: 0 16px 8px; background: #16162a; border: 1px solid #2a2a4a; border-radius: 12px;
+    padding: 12px 14px; display: flex; justify-content: space-between; align-items: center;
+    font-size: 0.85rem; color: #ddd;
+  }
+  .histItem span { color: #666; font-size: 0.75rem; }
+
+  .histToggle {
+    margin: 8px 16px 4px; display: flex; gap: 6px;
+  }
+  .histToggle button {
+    flex: 1; background: #16162a; border: 1px solid #2a2a4a; color: #888;
+    border-radius: 10px; padding: 7px 6px; font-size: 0.66rem; font-weight: 600;
+    cursor: pointer; font-family: inherit; line-height: 1.3;
+  }
+  .histToggle button.on { border-color: #f7c948; color: #f7c948; background: rgba(247,201,72,.08); }
+  .histToggleLbl { margin: 10px 16px 2px; font-size: 0.65rem; color: #555; text-transform: uppercase; letter-spacing: 1px; }
+
+  /* shared note inside phone */
+  .note.small {
+    margin: 8px 16px 0; font-size: 0.72rem; color: #4ecdc4; text-align: center;
+  }
+
+  /* --- old (current) gate style --- */
+  .gateOld {
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    padding: 50px 24px 0;
+  }
+  .gateIco { font-size: 2.2rem; margin-bottom: 14px; }
+  .gateTitle { font-size: 0.95rem; font-weight: 700; margin: 0 0 10px; }
+  .gateText { font-size: 0.8rem; color: #999; line-height: 1.6; margin: 0 0 20px; max-width: 220px; }
+  .gateBtnSingle {
+    width: 100%; max-width: 220px; background: linear-gradient(135deg, #f7c948, #ff6b6b); color: #1a1a1a;
+    font-weight: 800; font-size: 0.88rem; border-radius: 50px; padding: 12px; text-align: center;
+    box-shadow: 0 4px 18px rgba(247, 201, 72, 0.22);
+  }
+  .gateLinkSmall { margin-top: 12px; font-size: 0.75rem; color: #667eea; }
+
+  /* --- proposed "cute gate" style --- */
+  .gateCute {
+    display: flex; flex-direction: column; align-items: center; text-align: center;
+    padding: 44px 24px 0;
+  }
+  .gateIconCircle {
+    width: 68px; height: 68px; border-radius: 50%;
+    background: linear-gradient(135deg, rgba(247,201,72,.18), rgba(255,107,107,.14));
+    border: 1px solid rgba(247,201,72,.32);
+    display: flex; align-items: center; justify-content: center; font-size: 1.9rem; margin-bottom: 16px;
+  }
+  .gateTitleCute { font-size: 1rem; font-weight: 800; margin: 0 0 8px; }
+  .gateTextCute { font-size: 0.8rem; color: #999; line-height: 1.6; margin: 0 0 20px; max-width: 220px; }
+  .gateBtnPrimary {
+    width: 100%; max-width: 220px; background: linear-gradient(135deg, #f7c948, #ff6b6b); color: #1a1a1a;
+    font-weight: 800; font-size: 0.88rem; border-radius: 50px; padding: 12px; text-align: center;
+    box-shadow: 0 4px 18px rgba(247, 201, 72, 0.22); margin-bottom: 10px;
+  }
+  .gateBtnSecondary {
+    width: 100%; max-width: 220px; background: transparent; border: 1px solid #3a3a5a; color: #ccc;
+    font-weight: 700; font-size: 0.88rem; border-radius: 50px; padding: 11px; text-align: center;
+  }
+  .gateFoot { margin-top: 14px; font-size: 0.7rem; color: #555; }
+
+  /* tab bar */
+  .tabbar {
+    display: flex; align-items: flex-end; justify-content: space-around;
+    border-top: 1px solid #2a2a4a; padding: 8px 4px 12px; background: #0f0f1a; flex-shrink: 0;
+  }
+  .tab {
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+    font-size: 0.6rem; color: #777; cursor: pointer; padding: 2px 6px;
+  }
+  .tab.active { color: #f7c948; }
+  .tab .ico { font-size: 1.1rem; }
+  .scanWrap { display: flex; flex-direction: column; align-items: center; gap: 2px; transform: translateY(-12px); cursor: pointer; }
+  .scanBtn {
+    width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg,#f7c948,#ff6b6b);
+    display: flex; align-items: center; justify-content: center; font-size: 1.15rem;
+    box-shadow: 0 4px 14px rgba(247,201,72,.35);
+  }
+  .scanLbl { font-size: 0.6rem; color: #777; }
+
+  /* scan modal overlay */
+  .scanModalOverlay {
+    position: absolute; inset: 0; background: rgba(0,0,0,.6);
+    display: none; align-items: center; justify-content: center; z-index: 10; padding: 24px;
+  }
+  .scanModalOverlay.show { display: flex; }
+  .scanModal {
+    width: 100%; background: #16162a; border: 1px solid #2a2a4a; border-radius: 16px;
+    overflow: hidden; padding-bottom: 22px;
+  }
+  .scanHead {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 16px; border-bottom: 1px solid #2a2a4a; font-size: 0.85rem; font-weight: 700;
+  }
+  .scanHead .x { color: #777; cursor: pointer; font-size: 1.1rem; }
+  .scanModal .gateOld, .scanModal .gateCute { padding-top: 22px; }
+
+  .note {
+    max-width: 760px; margin: 30px auto 0; background: #16162a; border: 1px solid #2a2a4a;
+    border-radius: 12px; padding: 16px 20px; font-size: 13.5px; color: #9a9a9a; line-height: 1.7;
+  }
+  .note b { color: #ccc; }
+  .note ul { margin: 8px 0 0; padding-left: 22px; }
+  .note li { margin-bottom: 6px; }
+</style>
+</head>
+<body>
+
+<h1>What a guest sees when they tap each tab</h1>
+<p class="sub">This is the mobile bottom bar a guest lands on once the homepage is public (Option 1). Tap any tab below — including the 📸 Scan button — to preview that flow. Use the toggle to compare today's gate screens vs. a friendlier, consistent redesign.</p>
+
+<div class="legend">
+  <span class="ok">🎡 Decide — open</span>
+  <span class="ok">📒 History — open</span>
+  <span class="locked">📸 Scan — gated</span>
+  <span class="locked">🧺 Pantry — gated</span>
+  <span class="locked">👤 Profile — gated</span>
+</div>
+
+<div class="toggleRow">
+  Show:
+  <div class="modeToggle">
+    <button class="on" data-mode="current" onclick="setMode('current')">Current gates</button>
+    <button data-mode="proposed" onclick="setMode('proposed')">Proposed — cute gate + Sign In &amp; Sign Up</button>
+  </div>
+</div>
+
+<div class="stage">
+  <div class="col">
+    <div class="panelTitle">Tap the bottom bar to switch screens</div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="screen">
+        <div class="scrollArea">
+
+          <!-- DECIDE -->
+          <div class="screenPanel show" data-tab="decide">
+            <div class="head">
+              <div class="logo">🎰 Meal <span>Decider</span></div>
+              <div class="signUpBtn">Sign Up</div>
+            </div>
+            <div class="dCard">
+              <span class="dLabel">What's in your fridge?</span>
+              <input class="dInput" value="chicken, rice, broccoli" readonly>
+              <div class="spinCta">🎡 SPIN THE WHEEL</div>
+              <div class="spinHint">🎲 2 free spins left today</div>
+              <div class="pantryBtn">🧺 Load from pantry 🔒</div>
+            </div>
+            <p class="note small">✅ Works fully for guests — 3 free spins per day, no account needed.</p>
+          </div>
+
+          <!-- HISTORY -->
+          <div class="screenPanel" data-tab="history">
+            <div class="head"><div class="logo">📒 Meal <span>History</span></div></div>
+
+            <div class="histToggleLbl">Preview as</div>
+            <div class="histToggle">
+              <button class="on" data-hist="data" onclick="setHistState('data')">Returning guest (has history)</button>
+              <button data-hist="empty" onclick="setHistState('empty')">New guest (no history yet)</button>
+            </div>
+
+            <div id="histHasData">
+              <div class="histSearch">🔍 Search meals…</div>
+              <div class="histGroup">This week</div>
+              <div class="histItem">🍲 Chicken Stir-Fry <span>Today ▼</span></div>
+              <div class="histItem">🥗 Greek Salad <span>Today ▼</span></div>
+              <div class="histGroup">Last week</div>
+              <div class="histItem">🍳 Veggie Omelette <span>6d ago ▼</span></div>
+              <p class="note small">✅ Works for guests — saved on this device.</p>
+            </div>
+
+            <div id="histEmpty" style="display:none;">
+              <div class="gateVariant" data-mode="current">
+                <div class="gateOld" style="padding-top: 50px;">
+                  <span class="gateIco">📒</span>
+                  <p class="gateText">No meals yet — spin the wheel! 🎡</p>
+                </div>
+              </div>
+              <div class="gateVariant" data-mode="proposed" style="display:none;">
+                <div class="gateCute" style="padding-top: 30px;">
+                  <div class="gateIconCircle">📒</div>
+                  <p class="gateTitleCute">Remember every meal</p>
+                  <p class="gateTextCute">Sign up free and we'll keep a running history of everything you decide — synced across your devices.</p>
+                  <div class="gateBtnPrimary">Sign Up — It's Free</div>
+                  <div class="gateBtnSecondary">Already have an account? Sign In</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PANTRY -->
+          <div class="screenPanel" data-tab="pantry">
+            <div class="head"><div class="logo">🧺 My <span>Pantry</span></div></div>
+            <div class="gateVariant" data-mode="current">
+              <div class="gateOld">
+                <span class="gateIco">🧺</span>
+                <p class="gateTitle">Save your ingredients to Pantry</p>
+                <p class="gateText">Create up to 3 pantry lists and load them into the decider with one tap — sign up free to start.</p>
+                <div class="gateBtnSingle">Sign Up — It's Free</div>
+              </div>
+            </div>
+            <div class="gateVariant" data-mode="proposed" style="display:none;">
+              <div class="gateCute">
+                <div class="gateIconCircle">🧺</div>
+                <p class="gateTitleCute">Your Pantry is waiting</p>
+                <p class="gateTextCute">Save ingredient lists and load them into the decider with one tap. Free, takes about 30 seconds.</p>
+                <div class="gateBtnPrimary">Sign Up — It's Free</div>
+                <div class="gateBtnSecondary">Already have an account? Sign In</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- PROFILE -->
+          <div class="screenPanel" data-tab="profile">
+            <div class="head"><div class="logo">👤 <span>Profile</span></div></div>
+            <div class="gateVariant" data-mode="current">
+              <div class="gateOld">
+                <span class="gateIco">👤</span>
+                <p class="gateText">Sign in to manage your profile, history, and pantry.</p>
+                <div class="gateBtnSingle">Sign In</div>
+                <div class="gateLinkSmall">or create a free account</div>
+              </div>
+            </div>
+            <div class="gateVariant" data-mode="proposed" style="display:none;">
+              <div class="gateCute">
+                <div class="gateIconCircle">👤</div>
+                <p class="gateTitleCute">Make it yours</p>
+                <p class="gateTextCute">Sign in to see your profile, meal history, and pantry — or create a free account in seconds.</p>
+                <div class="gateBtnPrimary">Sign Up — It's Free</div>
+                <div class="gateBtnSecondary">Already have an account? Sign In</div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <nav class="tabbar">
+          <div class="tab active" data-tab="decide" onclick="selectTab('decide')"><span class="ico">🎡</span>Decide</div>
+          <div class="tab" data-tab="history" onclick="selectTab('history')"><span class="ico">📒</span>History</div>
+          <div class="scanWrap" onclick="openScan()">
+            <div class="scanBtn">📸</div>
+            <span class="scanLbl">Scan</span>
+          </div>
+          <div class="tab" data-tab="pantry" onclick="selectTab('pantry')"><span class="ico">🧺</span>Pantry</div>
+          <div class="tab" data-tab="profile" onclick="selectTab('profile')"><span class="ico">👤</span>Profile</div>
+        </nav>
+      </div>
+
+      <!-- SCAN MODAL -->
+      <div class="scanModalOverlay" id="scanModal" onclick="closeScan()">
+        <div class="scanModal" onclick="event.stopPropagation()">
+          <div class="scanHead"><span>📸 Fridge Scan</span><span class="x" onclick="closeScan()">×</span></div>
+          <div class="gateVariant" data-mode="current">
+            <div class="gateOld">
+              <p class="gateTitle">Snap a photo, get your ingredients</p>
+              <p class="gateText">Photograph your open fridge and AI fills in the ingredient list for you — sign up free to use it.</p>
+              <div class="gateBtnSingle">Sign Up — It's Free</div>
+            </div>
+          </div>
+          <div class="gateVariant" data-mode="proposed" style="display:none;">
+            <div class="gateCute">
+              <div class="gateIconCircle">📸</div>
+              <p class="gateTitleCute">Snap a photo, skip the typing</p>
+              <p class="gateTextCute">AI reads your fridge photo and fills in the ingredient list for you. Free, takes about 30 seconds.</p>
+              <div class="gateBtnPrimary">Sign Up — It's Free</div>
+              <div class="gateBtnSecondary">Already have an account? Sign In</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <p class="hint">👆 Try: tap Pantry, then toggle "Proposed" above to see the redesigned gate.</p>
+  </div>
+</div>
+
+<div class="note">
+  <b>Today, three of five destinations end in a wall</b> for a guest: 📸 Scan (popup), 🧺 Pantry (full screen), 👤 Profile (full screen). 🎡 Decide and 📒 History work fully without an account.
+  <ul>
+    <li><b>Scan &amp; Pantry today:</b> only a single "Sign Up — It's Free" button. A returning user who already has an account has no quick way back to Sign In from here — they'd have to find Profile first.</li>
+    <li><b>Profile today:</b> already does roughly what you're asking for — "Sign In" primary + "or create a free account" link.</li>
+    <li><b>Proposed:</b> the same friendly template everywhere — a soft icon badge, one warm sentence about what they're missing, then <b>both</b> "Sign Up — It's Free" and "Already have an account? Sign In" buttons. Consistent, low-pressure, and never strands a returning user.</li>
+    <li><b>New — History, empty state:</b> a brand-new guest who taps History before ever spinning sees the same plain "No meals yet — spin the wheel! 🎡" as everyone today. Proposed: for guests only, swap that empty state for the same cute gate — "Remember every meal" + Sign Up/Sign In. A guest who already <i>has</i> history keeps seeing it as normal (no change, no gate).</li>
+  </ul>
+  This only touches the three gate screens/popup plus History's empty state — Decide and History-with-content need no changes.
+</div>
+
+<script>
+  function selectTab(tab) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+    document.querySelectorAll('.screenPanel').forEach(p => p.classList.toggle('show', p.dataset.tab === tab));
+  }
+  function setMode(mode) {
+    document.querySelectorAll('.modeToggle button').forEach(b => b.classList.toggle('on', b.dataset.mode === mode));
+    document.querySelectorAll('.gateVariant').forEach(el => {
+      el.style.display = el.dataset.mode === mode ? '' : 'none';
+    });
+  }
+  function openScan() { document.getElementById('scanModal').classList.add('show'); }
+  function closeScan() { document.getElementById('scanModal').classList.remove('show'); }
+  function setHistState(state) {
+    document.querySelectorAll('.histToggle button').forEach(b => b.classList.toggle('on', b.dataset.hist === state));
+    document.getElementById('histHasData').style.display = state === 'data' ? '' : 'none';
+    document.getElementById('histEmpty').style.display = state === 'empty' ? '' : 'none';
+  }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chicken Biryani — Meal Decider</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0f0f1a;
+      color: #ccc;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 48px 16px 80px;
+    }
+
+    /* ── Logo ── */
+    .logo-wrap {
+      width: 160px;
+      margin-bottom: 24px;
+    }
+
+    /* ── Shared-by badge ── */
+    .shared-by {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 0.8rem;
+      color: #555;
+      margin-bottom: 20px;
+    }
+
+    /* ── Card — exact match to app .card ── */
+    .card {
+      width: 100%;
+      max-width: 520px;
+      background: #16162a;
+      border: 1px solid #2a2a4a;
+      border-radius: 16px;
+      padding: 20px;
+      margin-bottom: 16px;
+    }
+
+    /* ── Label — exact match to app .label ── */
+    .label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #8888bb;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 10px;
+    }
+
+    /* ── Recipe — exact match to app .recipe ── */
+    .recipe {
+      line-height: 1.7;
+      font-size: 0.92rem;
+      color: #ccc;
+    }
+
+    /* renderRecipe: ## heading */
+    .r-heading {
+      color: #f7c948;
+      font-weight: 700;
+      margin-top: 14px;
+      margin-bottom: 2px;
+    }
+
+    /* renderRecipe: **bold** only line */
+    .r-bold {
+      color: #f7c948;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+
+    /* renderRecipe: - bullet */
+    .r-bullet {
+      padding-left: 12px;
+    }
+
+    /* step line */
+    .r-step {
+      margin-bottom: 4px;
+    }
+
+    /* divider */
+    .r-divider {
+      color: #333;
+      margin: 8px 0;
+    }
+
+    /* "may need to buy" alert inline style */
+    .buy-alert {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: #2a1f00;
+      border: 1px solid #5a3e00;
+      color: #f7c948;
+      font-size: 0.78rem;
+      font-weight: 600;
+      padding: 1px 8px;
+      border-radius: 20px;
+      margin-left: 6px;
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    /* ── CTA ── */
+    .cta-wrap {
+      width: 100%;
+      max-width: 520px;
+      margin-top: 4px;
+    }
+
+    .cta-btn {
+      display: block;
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #6c6cff, #a855f7);
+      color: #fff;
+      font-size: 1rem;
+      font-weight: 700;
+      border: none;
+      border-radius: 14px;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      letter-spacing: 0.2px;
+      transition: opacity 0.2s;
+    }
+    .cta-btn:hover { opacity: 0.9; }
+
+    .cta-sub {
+      text-align: center;
+      color: #555;
+      font-size: 0.8rem;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Logo -->
+  <div class="logo-wrap">
+    <svg width="100%" viewBox="200 55 280 320" xmlns="http://www.w3.org/2000/svg">
+      <g transform="translate(340,175)">
+        <path d="M0,0 L0,-100 A100,100 0 0,1 86.6,-50 Z" fill="#FF6B35" opacity="0.92"/>
+        <path d="M0,0 L86.6,-50 A100,100 0 0,1 86.6,50 Z" fill="#F7C948" opacity="0.92"/>
+        <path d="M0,0 L86.6,50 A100,100 0 0,1 0,100 Z" fill="#4CAF82" opacity="0.92"/>
+        <path d="M0,0 L0,100 A100,100 0 0,1 -86.6,50 Z" fill="#5B9BD5" opacity="0.92"/>
+        <path d="M0,0 L-86.6,50 A100,100 0 0,1 -86.6,-50 Z" fill="#C65DB1" opacity="0.92"/>
+        <path d="M0,0 L-86.6,-50 A100,100 0 0,1 0,-100 Z" fill="#FF8C5A" opacity="0.92"/>
+        <circle cx="0" cy="0" r="100" fill="none" stroke="white" stroke-width="2.5"/>
+        <circle cx="0" cy="0" r="40" fill="white" stroke="#eee" stroke-width="1"/>
+        <g transform="rotate(-15)">
+          <line x1="-10" y1="28" x2="-10" y2="-10" stroke="#444" stroke-width="3" stroke-linecap="round"/>
+          <line x1="-16" y1="-10" x2="-16" y2="-28" stroke="#444" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="-10" y1="-10" x2="-10" y2="-28" stroke="#444" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="-4" y1="-10" x2="-4" y2="-28" stroke="#444" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M-16,-10 Q-10,-4 -4,-10" stroke="#444" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        </g>
+        <g transform="rotate(15)">
+          <rect x="7" y="8" width="6" height="20" rx="3" fill="#444"/>
+          <rect x="6" y="4" width="8" height="5" rx="1" fill="#555"/>
+          <path d="M8,4 L8,-26 Q18,-20 12,4 Z" fill="#444"/>
+        </g>
+        <polygon points="0,-92 -9,-108 9,-108" fill="#2D2D2D"/>
+      </g>
+      <text x="340" y="318" text-anchor="middle" font-size="44" fill="#faf9f5" font-family="-apple-system, sans-serif" font-weight="500">meal decider</text>
+      <text x="340" y="350" text-anchor="middle" fill="#c2c0b6" font-size="24" font-family="-apple-system, sans-serif">spin. cook. eat.</text>
+    </svg>
+  </div>
+
+  <!-- Shared-by -->
+  <div class="shared-by">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#555" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+      <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+    </svg>
+    A recipe was shared with you
+  </div>
+
+  <!-- Recipe card — identical to app -->
+  <div class="card">
+    <span class="label">Your Recipe</span>
+
+    <div class="recipe">
+
+      <div class="r-bold" style="font-size:1.15rem;">Chicken Biryani</div>
+
+      <div class="r-heading">Ingredients</div>
+      <div class="r-bullet">• 500g chicken thighs, cut into pieces</div>
+      <div class="r-bullet">• 2 cups basmati rice</div>
+      <div class="r-bullet">• 2 large onions, thinly sliced</div>
+      <div class="r-bullet">• 3 tomatoes, chopped</div>
+      <div class="r-bullet">• 4 cloves garlic, minced</div>
+      <div class="r-bullet">• Biryani spice mix <span class="buy-alert">⚠ may need to buy</span></div>
+      <div class="r-bullet">• Saffron strands <span class="buy-alert">⚠ may need to buy</span></div>
+      <div class="r-bullet">• Fresh mint &amp; coriander <span class="buy-alert">⚠ may need to buy</span></div>
+      <div class="r-bullet">• 3 tbsp ghee or butter <span class="buy-alert">⚠ may need to buy</span></div>
+
+      <div class="r-divider">---</div>
+
+      <div class="r-heading">Steps</div>
+      <div class="r-step">1. <strong style="color:#f7c948">Marinate the chicken</strong> — Mix chicken with yogurt, garlic, and half the spices. Rest 30 min.</div>
+      <div class="r-step">2. <strong style="color:#f7c948">Fry the onions</strong> — Cook onions in ghee until deep golden brown. Set half aside.</div>
+      <div class="r-step">3. <strong style="color:#f7c948">Cook the base</strong> — Fry remaining onions with spices 1 min. Add marinated chicken, cook 15 min.</div>
+      <div class="r-step">4. <strong style="color:#f7c948">Par-boil the rice</strong> — Boil rice with whole spices to 70% done. Drain.</div>
+      <div class="r-step">5. <strong style="color:#f7c948">Layer &amp; dum</strong> — Layer rice over chicken. Add saffron milk and fried onions. Cover tightly, cook on low 20 min.</div>
+      <div class="r-step">6. <strong style="color:#f7c948">Rest &amp; serve</strong> — Rest 5 min before opening. Mix gently and garnish with fresh herbs.</div>
+
+      <div class="r-divider">---</div>
+
+      <div class="r-heading">Tips</div>
+      <div>Use day-old cooked rice if possible — it holds up better in the dum step without turning mushy.</div>
+      <div>Don't skip the resting time — the trapped steam finishes the rice perfectly without burning the bottom.</div>
+
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-wrap">
+    <a class="cta-btn" href="/">
+      🎰 Decide your own meal →
+    </a>
+    <p class="cta-sub">Enter what's in your fridge and let the wheel decide</p>
+  </div>
+
+</body>
+</html>

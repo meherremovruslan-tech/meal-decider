@@ -129,3 +129,8 @@
   box-sizing: border-box;
 }
 .dropdownItem:hover { background: #2a2a4a; }
+
+/* The mobile shell on the root page has its own headers + tab bar */
+@media (max-width: 767px) {
+  .hideOnMobileRoot { display: none; }
+}

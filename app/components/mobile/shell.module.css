@@ -1,0 +1,12 @@
+.shell {
+  min-height: 100vh;
+  padding-bottom: 96px; /* keep content clear of the fixed tab bar */
+}
+
+.placeholder {
+  text-align: center;
+  color: #555;
+  padding: 120px 30px;
+  font-size: 0.9rem;
+  line-height: 1.8;
+}

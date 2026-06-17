@@ -1,13 +1,16 @@
 'use client';
 import { useSession, signOut } from 'next-auth/react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { useRef, useState, useEffect } from 'react';
 import styles from './Header.module.css';
+import { APP_NAME } from '@/lib/brand';
 
 export default function Header() {
   const { data: session } = useSession();
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const pathname = usePathname();
 
   useEffect(() => {
     if (!open) return;
@@ -21,8 +24,8 @@ export default function Header() {
   }, [open]);
 
   return (
-    <header className={styles.header}>
-      <span className={styles.logo}>🎰 Meal Decider</span>
+    <header className={`${styles.header} ${pathname === '/' ? styles.hideOnMobileRoot : ''}`}>
+      <span className={styles.logo}>🎰 {APP_NAME}</span>
       <div className={styles.authRow}>
         {session ? (
           <div className={styles.avatarWrap} ref={dropdownRef}>

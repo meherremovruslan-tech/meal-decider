@@ -1,0 +1,159 @@
+.wrap { padding-bottom: 8px; }
+
+.head {
+  padding: 18px 20px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.logo { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.5px; }
+.logo span { color: #f7c948; }
+
+.signUpBtn {
+  flex-shrink: 0;
+  background: linear-gradient(135deg, #6c6cff, #a855f7);
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 700;
+  padding: 8px 18px;
+  border-radius: 50px;
+  text-decoration: none;
+  letter-spacing: 0.3px;
+}
+.signUpBtn:active { transform: scale(0.96); }
+
+.card {
+  background: #16162a;
+  border: 1px solid #2a2a4a;
+  border-radius: 16px;
+  padding: 16px;
+  margin: 0 16px 14px;
+}
+
+.label {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #8888bb;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+
+.input {
+  width: 100%;
+  background: #0f0f1a;
+  border: 1px solid #2a2a4a;
+  border-radius: 14px;
+  padding: 14px 16px;
+  color: #eee;
+  font-size: 1rem;
+  outline: none;
+  margin-bottom: 12px;
+}
+.input:focus { border-color: #6c6cff; }
+.input::placeholder { color: #555; }
+
+.spinCta {
+  width: 100%;
+  border: none;
+  border-radius: 50px;
+  padding: 15px;
+  background: linear-gradient(135deg, #f7c948, #ff6b6b);
+  color: #1a1a1a;
+  font-weight: 800;
+  font-size: 1rem;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  box-shadow: 0 4px 18px rgba(247, 201, 72, 0.22);
+  font-family: inherit;
+  margin-bottom: 8px;
+}
+.spinCta:active { transform: scale(0.97); }
+.spinCta:disabled { opacity: 0.4; }
+
+.spinHint {
+  text-align: center;
+  font-size: 0.78rem;
+  color: #f7c948;
+  margin: 4px 0 12px;
+}
+
+.pantryBtn {
+  width: 100%;
+  border: 1px solid #2a2a4a;
+  border-radius: 14px;
+  padding: 13px;
+  background: #1e1e3a;
+  color: #aaa;
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.chipRow {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+.chipRow::-webkit-scrollbar { display: none; }
+
+.chip {
+  flex-shrink: 0;
+  padding: 9px 16px;
+  border-radius: 22px;
+  border: 1px solid #2a2a4a;
+  background: #0f0f1a;
+  color: #999;
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-family: inherit;
+}
+.chipOn { background: #6c6cff22; border-color: #6c6cff; color: #8c8cff; font-weight: 600; }
+.chipCuisineOn { background: #f7c94822; border-color: #f7c948; color: #f7c948; font-weight: 600; }
+
+.mealGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin-top: 2px;
+}
+.mealCell {
+  position: relative;
+  background: #0f0f1a;
+  border: 1px solid #2a2a4a;
+  color: #999;
+  border-radius: 12px;
+  padding: 10px 2px 8px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  font-family: inherit;
+}
+.mealCellOn {
+  border-color: #f7c948;
+  background: #f7c94814;
+  color: #f7c948;
+  font-weight: 700;
+}
+.mealEmoji { font-size: 1.25rem; line-height: 1; }
+.mealText { font-size: 0.72rem; }
+.autoTag {
+  position: absolute;
+  top: -7px;
+  right: 6px;
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: #0f0f1a;
+  background: #f7c948;
+  border-radius: 7px;
+  padding: 1px 5px;
+}
+.mealHint { margin: 8px 2px 0; font-size: 0.74rem; color: #888; }
+
+.error { color: #ff6b6b; font-size: 0.9rem; text-align: center; margin: 0 16px 14px; }

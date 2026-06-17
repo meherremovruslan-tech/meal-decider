@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login wall — flow options mockup</title>
+<style>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #0a0a14;
+    color: #eee;
+    padding: 32px 20px 80px;
+  }
+  h1 { text-align: center; font-size: 22px; margin: 0 0 6px; }
+  .sub { text-align: center; color: #777; font-size: 14px; margin: 0 0 26px; max-width: 640px; margin-left: auto; margin-right: auto; }
+
+  .tabs {
+    display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-bottom: 8px;
+  }
+  .tabs button {
+    background: #16162a; border: 1px solid #2a2a4a; color: #ccc;
+    border-radius: 20px; padding: 9px 18px; font-size: 13.5px; cursor: pointer;
+    font-family: inherit; font-weight: 600;
+  }
+  .tabs button.on { border-color: #f7c948; color: #f7c948; background: rgba(247,201,72,.08); }
+  .tabs .rec { color: #4ecdc4; font-size: 10px; font-weight: 700; margin-left: 6px;
+    background: rgba(78,205,196,.12); border-radius: 8px; padding: 2px 6px; }
+
+  .stage {
+    display: flex; gap: 32px; justify-content: center; flex-wrap: wrap; align-items: flex-start;
+    margin-top: 28px;
+  }
+
+  /* phone frame */
+  .phone {
+    width: 300px; min-height: 560px; background: #0f0f1a; border: 1px solid #2a2a4a;
+    border-radius: 28px; padding: 0; overflow: hidden; position: relative;
+    box-shadow: 0 20px 60px rgba(0,0,0,.5);
+  }
+  .phone.tall { height: 600px; display: flex; flex-direction: column; }
+  .notch {
+    width: 90px; height: 18px; background: #050509; border-radius: 0 0 12px 12px;
+    margin: 0 auto; position: relative; z-index: 2; flex-shrink: 0;
+  }
+  .screen { padding: 4px 0 18px; }
+  .phone.tall .screen { flex: 1; display: flex; flex-direction: column; padding-bottom: 0; }
+  .scrollArea { flex: 1; }
+
+  .panelTitle {
+    font-size: 11px; letter-spacing: .12em; text-transform: uppercase;
+    color: #666; text-align: center; margin-bottom: 12px;
+  }
+  .col { display: flex; flex-direction: column; align-items: center; }
+
+  /* ---------- LOGIN PAGE (current) ---------- */
+  .authCard {
+    margin: 28px 16px; background: #1a1a2e; border: 1px solid rgba(255,255,255,.08);
+    border-radius: 16px; padding: 22px 18px;
+  }
+  .authLogo { text-align: center; font-size: 17px; font-weight: 700; margin-bottom: 18px; }
+  .authField { margin-bottom: 12px; }
+  .authLabel { font-size: 11.5px; color: #ccc; margin-bottom: 5px; }
+  .authInput {
+    width: 100%; padding: 9px 12px; background: #0f0f1a; border: 1px solid rgba(255,255,255,.12);
+    border-radius: 8px; color: #555; font-size: 13px;
+  }
+  .authBtn {
+    width: 100%; padding: 10px; background: #667eea; color: #fff; border: none;
+    border-radius: 8px; font-size: 13.5px; font-weight: 600; margin-top: 4px; text-align: center;
+  }
+  .authLinks { text-align: center; margin-top: 12px; font-size: 11.5px; color: #888; }
+  .authLinks a { color: #667eea; }
+  .authDivider { border: none; border-top: 1px solid rgba(255,255,255,.07); margin: 16px 0; }
+  .authGoogle {
+    width: 100%; padding: 10px; background: #fff; color: #3c4043; border-radius: 8px;
+    font-size: 12.5px; font-weight: 500; text-align: center; display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+  .guestLink {
+    display: block; text-align: center; font-size: 11.5px; color: #777; margin-top: 12px;
+    border: 1px dashed #ff6b6b55; border-radius: 8px; padding: 8px; background: rgba(255,107,107,.06);
+  }
+  .guestLink b { color: #ff8a8a; }
+  .arrowDown { text-align:center; color:#ff6b6b; font-size: 22px; margin-top: -4px; }
+
+  /* ---------- DECIDE TAB (Option 1) ---------- */
+  .head {
+    padding: 18px 18px 6px; display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  }
+  .logo { font-size: 1.2rem; font-weight: 800; letter-spacing: -0.5px; }
+  .logo span { color: #f7c948; }
+  .signUpBtn {
+    flex-shrink: 0; background: linear-gradient(135deg, #6c6cff, #a855f7); color: #fff;
+    font-size: 0.78rem; font-weight: 700; padding: 7px 16px; border-radius: 50px;
+  }
+  .avatarBtn {
+    flex-shrink: 0; width: 34px; height: 34px; border-radius: 50%; background: #1e1e3a;
+    border: 1px solid #2a2a4a; display: flex; align-items: center; justify-content: center; font-size: 1.05rem;
+  }
+  .dCard {
+    background: #16162a; border: 1px solid #2a2a4a; border-radius: 16px; padding: 16px; margin: 0 16px 14px;
+  }
+  .dLabel {
+    display: block; font-size: 0.68rem; font-weight: 600; color: #8888bb;
+    text-transform: uppercase; letter-spacing: 1px; margin-bottom: 10px;
+  }
+  .dInput {
+    width: 100%; background: #0f0f1a; border: 1px solid #2a2a4a; border-radius: 14px;
+    padding: 13px 14px; color: #eee; font-size: 0.92rem; margin-bottom: 12px; outline: none;
+    font-family: inherit;
+  }
+  .dInput::placeholder { color: #555; }
+  .dInput:focus { border-color: #6c6cff; }
+  .spinCta {
+    width: 100%; border: none; border-radius: 50px; padding: 14px;
+    background: linear-gradient(135deg, #f7c948, #ff6b6b); color: #1a1a1a;
+    font-weight: 800; font-size: 0.95rem; letter-spacing: 0.5px; text-align: center;
+    box-shadow: 0 4px 18px rgba(247, 201, 72, 0.22); margin-bottom: 0; transition: all .15s; font-family: inherit;
+  }
+  .spinCta.disabled { opacity: 0.32; box-shadow: none; }
+  .spinHint {
+    text-align: center; font-size: 0.74rem; color: #f7c948; margin: 9px 0 12px;
+    transition: opacity .15s;
+  }
+  .spinHint.off { display: none; }
+  .pantryBtn {
+    width: 100%; border: 1px solid #2a2a4a; border-radius: 14px; padding: 12px;
+    background: #1e1e3a; color: #aaa; font-weight: 600; font-size: 0.85rem; text-align: center;
+  }
+  .mealGrid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-top: 2px; }
+  .mealCell {
+    background: #0f0f1a; border: 1px solid #2a2a4a; color: #999; border-radius: 12px;
+    padding: 10px 2px 8px; display: flex; flex-direction: column; align-items: center; gap: 3px;
+    font-size: 0.7rem; position: relative;
+  }
+  .mealCell.on { border-color: #f7c948; background: #f7c94814; color: #f7c948; font-weight: 700; }
+  .mealCell .em { font-size: 1.2rem; }
+  .autoTag {
+    position: absolute; top: -7px; right: 6px; font-size: 0.58rem; font-weight: 700;
+    color: #0f0f1a; background: #f7c948; border-radius: 7px; padding: 1px 5px;
+  }
+  .mealHint { margin: 8px 2px 0; font-size: 0.72rem; color: #888; }
+
+  /* bottom tab bar */
+  .tabbar {
+    display: flex; align-items: flex-end; justify-content: space-around;
+    border-top: 1px solid #2a2a4a; padding: 8px 4px 12px; background: #0f0f1a; flex-shrink: 0;
+  }
+  .tab {
+    display: flex; flex-direction: column; align-items: center; gap: 2px;
+    font-size: 0.6rem; color: #777; position: relative;
+  }
+  .tab.on { color: #f7c948; }
+  .tab .ico { font-size: 1.1rem; }
+  .lockBadge {
+    position: absolute; top: -3px; right: -8px; font-size: 0.55rem;
+  }
+  .scanWrap { display: flex; flex-direction: column; align-items: center; gap: 2px; transform: translateY(-12px); }
+  .scanBtn {
+    width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg,#f7c948,#ff6b6b);
+    display: flex; align-items: center; justify-content: center; font-size: 1.15rem;
+    box-shadow: 0 4px 14px rgba(247,201,72,.35);
+  }
+  .scanLbl { font-size: 0.6rem; color: #777; }
+
+  /* view-as toggle */
+  .toggleRow {
+    display: flex; align-items: center; justify-content: center; gap: 10px;
+    margin: 0 auto 22px; font-size: 13px; color: #aaa;
+  }
+  .viewToggle { display: flex; gap: 8px; }
+  .viewToggle button {
+    background: #16162a; border: 1px solid #2a2a4a; color: #ccc;
+    border-radius: 20px; padding: 8px 16px; font-size: 13px; cursor: pointer; font-family: inherit; font-weight: 600;
+  }
+  .viewToggle button.on { border-color: #f7c948; color: #f7c948; background: rgba(247,201,72,.08); }
+
+  /* ---------- LANDING PAGE (Option 3) ---------- */
+  .landing { padding: 50px 24px 0; text-align: center; }
+  .landingIcon { font-size: 64px; margin-bottom: 14px; }
+  .landingTitle { font-size: 1.25rem; font-weight: 800; line-height: 1.3; margin-bottom: 10px; }
+  .landingTitle span { color: #f7c948; }
+  .landingSub { font-size: 0.85rem; color: #999; line-height: 1.6; margin-bottom: 26px; }
+  .landingCta {
+    display: block; background: linear-gradient(135deg, #f7c948, #ff6b6b); color: #1a1a1a;
+    font-weight: 800; font-size: 0.95rem; border-radius: 50px; padding: 15px; margin-bottom: 14px;
+    box-shadow: 0 4px 18px rgba(247, 201, 72, 0.22);
+  }
+  .landingSignIn { font-size: 0.8rem; color: #777; }
+  .landingSignIn a { color: #667eea; }
+  .step2hint {
+    margin-top: 28px; padding-top: 18px; border-top: 1px dashed #2a2a4a;
+    font-size: 0.72rem; color: #555;
+  }
+
+  .note {
+    max-width: 760px; margin: 30px auto 0; background: #16162a; border: 1px solid #2a2a4a;
+    border-radius: 12px; padding: 16px 20px; font-size: 13.5px; color: #9a9a9a; line-height: 1.7;
+  }
+  .note b { color: #ccc; }
+  .note.good { border-color: #4ecdc455; }
+  .note.bad { border-color: #ff6b6b55; }
+  .note ul { margin: 8px 0 0; padding-left: 22px; }
+  .note li { margin-bottom: 6px; }
+
+  .panel { display: none; }
+  .panel.show { display: block; }
+</style>
+</head>
+<body>
+
+<h1>Fixing the login wall — what a new visitor sees first</h1>
+<p class="sub">Switch between the current flow and the proposed fixes. This is the very first screen for someone who taps a shared recipe link, types the URL, or clicks a Google search result.</p>
+
+<div class="tabs">
+  <button class="on" data-tab="current" onclick="showTab('current')">Current (login wall)</button>
+  <button data-tab="opt1" onclick="showTab('opt1')">Option 1 — Public homepage <span class="rec">RECOMMENDED</span></button>
+  <button data-tab="opt3" onclick="showTab('opt3')">Option 3 — Landing page first</button>
+</div>
+
+<!-- CURRENT -->
+<div class="panel show" id="panel-current">
+  <div class="stage">
+    <div class="col">
+      <div class="panelTitle">First screen — /login</div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="screen">
+          <div class="authCard">
+            <div class="authLogo">🎰 Meal Decider</div>
+            <div class="authField">
+              <div class="authLabel">Email</div>
+              <div class="authInput">you@email.com</div>
+            </div>
+            <div class="authField">
+              <div class="authLabel">Password</div>
+              <div class="authInput">••••••••</div>
+            </div>
+            <div class="authBtn">Sign In</div>
+            <div class="authLinks">Don't have an account? <a>Register</a></div>
+            <hr class="authDivider">
+            <div class="authGoogle">🔵 Continue with Google</div>
+            <div class="guestLink">→ Continue as guest <b>(3 spins/day)</b></div>
+          </div>
+          <div class="arrowDown">↑ tap this small link to reach the app ↑</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="note bad">
+    <b>What's happening:</b> Every unauthenticated visit to any page redirects here first — including someone who tapped <b>"Decide your own meal →"</b> from a shared recipe. The wheel, the ingredient input, everything that makes the product fun is one tap away, hidden behind a small dashed link at the bottom of a login form. Most people don't scan that far before bouncing.
+  </div>
+</div>
+
+<!-- OPTION 1 -->
+<div class="panel" id="panel-opt1">
+
+  <div class="toggleRow">
+    View as:
+    <div class="viewToggle">
+      <button class="on" data-view="guest" onclick="setView('guest')">🙋 Guest (not signed in)</button>
+      <button data-view="signed" onclick="setView('signed')">✅ Signed in</button>
+    </div>
+  </div>
+
+  <div class="stage">
+    <div class="col">
+      <div class="panelTitle">First screen — / (now public)</div>
+      <div class="phone tall">
+        <div class="notch"></div>
+        <div class="screen">
+          <div class="scrollArea">
+            <div class="head">
+              <div class="logo">🎰 Meal <span>Decider</span></div>
+              <div class="signUpBtn" id="headerCta">Sign Up</div>
+              <div class="avatarBtn" id="headerAvatar" style="display:none;">🍳</div>
+            </div>
+            <div class="dCard">
+              <span class="dLabel">What's in your fridge?</span>
+              <input class="dInput" placeholder="e.g. chicken, rice, tomatoes, garlic…" oninput="onIngredientInput(this)">
+              <div class="spinCta disabled" id="spinBtn">🎡 SPIN THE WHEEL</div>
+              <div class="spinHint" id="spinHint">🎲 3 free spins left today</div>
+              <div class="pantryBtn">🧺 Load from pantry <span id="pantryLock">🔒</span></div>
+            </div>
+            <div class="dCard">
+              <span class="dLabel">What meal are we deciding?</span>
+              <div class="mealGrid">
+                <div class="mealCell on"><span class="autoTag">AUTO</span><span class="em">🍳</span><span>Breakfast</span></div>
+                <div class="mealCell"><span class="em">🥗</span><span>Lunch</span></div>
+                <div class="mealCell"><span class="em">🍲</span><span>Dinner</span></div>
+              </div>
+              <div class="mealHint">✨ We picked Breakfast for you — it's morning. Tap another to change.</div>
+            </div>
+          </div>
+          <nav class="tabbar">
+            <div class="tab on"><span class="ico">🎡</span>Decide</div>
+            <div class="tab"><span class="ico">📒</span>History</div>
+            <div class="scanWrap">
+              <div class="scanBtn">📸</div>
+              <span class="scanLbl">Scan</span>
+            </div>
+            <div class="tab"><span class="ico">🧺</span>Pantry<span class="lockBadge" id="lockPantry">🔒</span></div>
+            <div class="tab"><span class="ico">👤</span>Profile<span class="lockBadge" id="lockProfile">🔒</span></div>
+          </nav>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="note good">
+    <b>Updated per your notes:</b>
+    <ul>
+      <li>The free-spins counter is now a quiet <b>hint line under the SPIN button</b>, not a button/pill of its own.</li>
+      <li>The SPIN button starts <b>greyed out</b> — type anything in the ingredients box and it lights up (try it!).</li>
+      <li>The hint <b>only appears in Guest view</b>. Switch to "Signed in" above — the hint disappears and the header shows the account avatar instead of "Sign Up", since signed-in users have unlimited spins.</li>
+    </ul>
+  </div>
+
+  <div class="note">
+    <b>Brainstorm — the bottom bar for guests:</b> you're right that mobile always shows this 5-tab bar. For a guest, <b>Pantry</b> and <b>Profile</b> currently lead to "sign up to unlock" / "sign in" screens rather than real content. Three ways to handle that, now that guests land here directly:
+    <ul>
+      <li><b>A — Leave as-is (no extra work):</b> tabs look identical for everyone; tapping Pantry/Profile as a guest shows the existing friendly "sign up to unlock" screens (already built). The small 🔒 badges in this mockup are <i>not</i> in the current app — toggle below to compare.</li>
+      <li><b>B — Add the 🔒 badges shown above:</b> guests see at a glance which tabs need an account before tapping, so it's not a surprise.</li>
+      <li><b>C — Turn "Profile" into "Sign In" for guests:</b> since there's no profile to show yet, relabel that one tab directly as the sign-in entry point; Pantry keeps its gate screen.</li>
+    </ul>
+    My instinct is <b>A</b> — the gate screens already sell the benefit well, and one more visual signal may not be worth the clutter. But happy to mock up B or C if you think guests need that heads-up.
+  </div>
+
+  <div class="toggleRow" style="margin-top: 18px;">
+    <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+      <input type="checkbox" id="badgeToggle" onchange="toggleBadges()">
+      Preview Option B — show 🔒 badges on Pantry/Profile
+    </label>
+  </div>
+</div>
+
+<!-- OPTION 3 -->
+<div class="panel" id="panel-opt3">
+  <div class="stage">
+    <div class="col">
+      <div class="panelTitle">First screen — marketing landing page</div>
+      <div class="phone">
+        <div class="notch"></div>
+        <div class="screen">
+          <div class="landing">
+            <div class="landingIcon">🎰</div>
+            <div class="landingTitle">Stuck deciding<br>what's for <span>dinner</span>?</div>
+            <div class="landingSub">Tell us what's in your fridge.<br>We'll spin a wheel and pick for you — recipe included.</div>
+            <div class="landingCta">🎲 Try It Now →</div>
+            <div class="landingSignIn">Already have an account? <a>Sign in</a></div>
+            <div class="step2hint">↓ tapping "Try It Now" leads to a <i>second</i> screen — the actual decider shown in Option 1 ↓</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="note bad">
+    <b>What's happening:</b> A dedicated intro screen could look polished for paid ads or SEO traffic later, and clearly states the value prop before asking for anything. But it inserts an extra screen + tap between a curious visitor and the wheel — for word-of-mouth sharing, that's an extra chance to lose someone who was one tap away from the fun part. Not recommended as the default experience right now.
+  </div>
+</div>
+
+<script>
+  function showTab(tab) {
+    document.querySelectorAll('.tabs button').forEach(b => b.classList.toggle('on', b.dataset.tab === tab));
+    document.querySelectorAll('.panel').forEach(p => p.classList.toggle('show', p.id === 'panel-' + tab));
+  }
+
+  function onIngredientInput(el) {
+    document.getElementById('spinBtn').classList.toggle('disabled', !el.value.trim());
+  }
+
+  function setView(view) {
+    document.querySelectorAll('.viewToggle button').forEach(b => b.classList.toggle('on', b.dataset.view === view));
+    const guest = view === 'guest';
+    document.getElementById('headerCta').style.display = guest ? '' : 'none';
+    document.getElementById('headerAvatar').style.display = guest ? 'none' : 'flex';
+    document.getElementById('spinHint').classList.toggle('off', !guest);
+    document.getElementById('pantryLock').style.display = guest ? '' : 'none';
+    document.getElementById('lockPantry').style.display = (guest && document.getElementById('badgeToggle').checked) ? '' : 'none';
+    document.getElementById('lockProfile').style.display = (guest && document.getElementById('badgeToggle').checked) ? '' : 'none';
+  }
+
+  function toggleBadges() {
+    const guest = document.querySelector('.viewToggle button.on').dataset.view === 'guest';
+    const on = document.getElementById('badgeToggle').checked && guest;
+    document.getElementById('lockPantry').style.display = on ? '' : 'none';
+    document.getElementById('lockProfile').style.display = on ? '' : 'none';
+  }
+
+  // init: hide lock badges by default
+  toggleBadges();
+</script>
+
+</body>
+</html>
