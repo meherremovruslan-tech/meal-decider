@@ -80,7 +80,7 @@ export default function HistoryTab({ history, expandedId, onToggle, onDelete, is
                     {h.recipe && <div className={styles.recipe}>{renderRecipe(h.recipe)}</div>}
                     <div className={styles.actions}>
                       {h.recipe
-                        ? <RecipeActions meal={h.meal} recipe={h.recipe} />
+                        ? <RecipeActions meal={h.meal} recipe={h.recipe} videoId={h.videoId} />
                         : <span className={styles.noRecipe}>No saved recipe for this meal.</span>}
                       <button
                         type="button"

@@ -96,6 +96,7 @@ export default function ProfilePage() {
         ingredients: item.ingredients || '',
         dietary_filters: item.dietary_filters || [],
         cuisine: item.cuisine || null,
+        video_id: item.video_id || null,
         created_at: item.created_at,
       }),
     })
@@ -504,7 +505,7 @@ export default function ProfilePage() {
                 <div className={styles.historyRecipe}>
                   {renderRecipe(h.recipe)}
                   <div style={{ marginTop: 12 }}>
-                    <RecipeActions meal={h.meal_name} recipe={h.recipe} />
+                    <RecipeActions meal={h.meal_name} recipe={h.recipe} videoId={h.video_id} />
                   </div>
                 </div>
               )}
