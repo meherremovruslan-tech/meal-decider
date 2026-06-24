@@ -18,7 +18,7 @@ export default function SpinOverlay({
 
   return (
     <div className={styles.overlay}>
-      <button type="button" className={styles.close} onClick={onClose} aria-label="Close">✕</button>
+      <button type="button" className={styles.close} onClick={recipe ? onDone : onClose} aria-label="Close">✕</button>
 
       {loadingSuggest && (
         <div className={styles.center}>
