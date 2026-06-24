@@ -8,7 +8,7 @@ import styles from './SpinOverlay.module.css';
 // → result badge → recipe view. State machine is driven entirely by props
 // from page.js — this component is presentational.
 export default function SpinOverlay({
-  open, onClose,
+  open, onClose, onDone,
   canvasRef, canvasSize,
   meals, loadingSuggest, spinning, spinGate,
   selectedMeal, intro, recipe, videoId, videoTitle, loadingRecipe, error,
@@ -70,7 +70,7 @@ export default function SpinOverlay({
             <RecipeActions meal={selectedMeal} recipe={recipe} videoId={videoId} videoTitle={videoTitle} />
           </div>
           <div className={styles.recipeText}>{renderRecipe(recipe)}</div>
-          <button type="button" className={styles.doneBtn} onClick={onClose}>Done ✓</button>
+          <button type="button" className={styles.doneBtn} onClick={onDone}>Done ✓</button>
         </div>
       )}
     </div>

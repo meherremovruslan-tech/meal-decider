@@ -235,6 +235,17 @@ export default function MealDecider() {
     }
   };
 
+  // "Done" ends the round: close the overlay and clear inputs so the next
+  // visit to Decide starts fresh instead of showing stale ingredients.
+  const handleMobileDone = () => {
+    setSpinOverlayOpen(false);
+    setIngredients('');
+    setMeals([]);
+    setSelectedMeal(null);
+    setRecipe('');
+    setRecipeVideo(null);
+  };
+
   // Sticky CTA: one tap fetches suggestions (if needed) and opens the wheel.
   const handleMobileSpin = () => {
     // Clear a stale result so the overlay always opens on the wheel,
@@ -784,6 +795,7 @@ export default function MealDecider() {
       <SpinOverlay
         open={isMobile && spinOverlayOpen}
         onClose={() => setSpinOverlayOpen(false)}
+        onDone={handleMobileDone}
         canvasRef={canvasRef}
         canvasSize={canvasSize}
         meals={meals}
