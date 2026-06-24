@@ -146,16 +146,17 @@
 
 .newBtn {
   flex-shrink: 0;
-  border: 2px dashed #2a2a4a;
-  background: transparent;
+  border: none;
+  background: #6c6cff;
   border-radius: 12px;
-  color: #777;
+  color: #fff;
   font-size: 0.85rem;
-  font-weight: 600;
+  font-weight: 700;
   padding: 0 16px;
   cursor: pointer;
   font-family: inherit;
 }
-.newBtn:disabled { opacity: 0.5; }
+.newBtn:active { transform: scale(0.98); }
+.newBtn:disabled { background: #2a2a4a; color: #777; cursor: default; }
 
 .limit { text-align: center; color: #555; font-size: 0.75rem; padding: 10px 0; }
