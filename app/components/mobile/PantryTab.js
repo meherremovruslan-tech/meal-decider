@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import GuestGate from './GuestGate';
 import styles from './PantryTab.module.css';
 
@@ -14,6 +14,7 @@ export default function PantryTab({ isSignedIn, onUse }) {
   const [editingId, setEditingId] = useState(null);
   const [editingName, setEditingName] = useState('');
   const [busyIds, setBusyIds] = useState(new Set());
+  const addInputRefs = useRef(new Map());
 
   useEffect(() => {
     if (!isSignedIn) { setLoading(false); return; }
@@ -126,6 +127,13 @@ export default function PantryTab({ isSignedIn, onUse }) {
     if (toAdd.length > 0) updateIngredients(list, [...list.ingredients, ...toAdd]);
   };
 
+  const submitAddInput = (list) => {
+    const el = addInputRefs.current.get(list.id);
+    if (!el || !el.value.trim()) return;
+    addIngredient(list, el.value);
+    el.value = '';
+  };
+
   if (!isSignedIn) {
     return (
       <div className={styles.wrap}>
@@ -190,18 +198,26 @@ export default function PantryTab({ isSignedIn, onUse }) {
             {list.ingredients.length === 0 && <span className={styles.emptyList}>No ingredients yet.</span>}
           </div>
 
-          <input
-            className={styles.addInput}
-            placeholder="e.g. rice, tomato, pasta"
-            enterKeyHint="done"
-            disabled={busyIds.has(list.id)}
-            onKeyDown={e => {
-              if (e.key === 'Enter' && e.target.value.trim()) {
-                addIngredient(list, e.target.value);
-                e.target.value = '';
-              }
-            }}
-          />
+          <div className={styles.addRow}>
+            <input
+              ref={el => addInputRefs.current.set(list.id, el)}
+              className={styles.addInput}
+              placeholder="e.g. rice, tomato, pasta"
+              enterKeyHint="done"
+              disabled={busyIds.has(list.id)}
+              onKeyDown={e => {
+                if (e.key === 'Enter') submitAddInput(list);
+              }}
+            />
+            <button
+              type="button"
+              className={styles.addBtn}
+              disabled={busyIds.has(list.id)}
+              onClick={() => submitAddInput(list)}
+            >
+              ＋ Add
+            </button>
+          </div>
           <p className={styles.addHint}>Separate multiple ingredients with commas</p>
 
           <button
